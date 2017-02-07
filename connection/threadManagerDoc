@@ -1,0 +1,145 @@
+ createThread
+
+     Create a thread.
+     Callback's only parameter is the thread_id of the created thread.
+    
+    @access   Public
+    @param    Object      attributesJSON      JSON object with thread's attributes.
+    @param    String      password            Password to use.  Can be an empty
+                                              string if thread is not
+                                              password-protected.
+    @param    Object      callback            Callback function.  Only one
+                                              parameter, being the thread_id of
+                                              the created thread.
+    @throws   Exception                       If password is not a string.
+    @throws   Exception                       If password is nonempty and less
+                                              than 6 characters.
+    @throws   Exception                       If attributesJSON is not a JSON
+                                              object.
+    @throws   Exception                       If
+                                              attributesJSON['passsword_protected']
+                                              exists and is neither 1 nor 0.
+    @throws   Exception                       If attributesJSON['join_type'] is
+                                              not length 3.
+    @throws   Exception                       If
+                                              attributesJSON['requires_email_verification']
+                                              exists and is neither 0 nor 1.
+
+ isUserInThread
+
+     Checks if user is in thread (i.e., has permission to post in thread).
+     Callback function has one parameter, which is true or false.
+    
+    @access   Public
+    @param    Number      threadID    thread_id of thread to check.
+    @param    Number      userID      user_id of thread to check.
+    @param    Object      callback    Callback function, with parameter as true or
+                                      false, corresponding to whether user exists
+                                      in thread.
+    @throws   Exception               If threadID is not an integer.
+    @throws   Exception               If userID is not an integer.
+
+ addUserToThread
+
+     Add user to thread (i.e., gives user permission to post in thread).
+     Callback function has one parameter, being the thread_users_id.
+    
+    @access   Public
+    @param    Number      threadID    The thread_id of the thread. 
+    @param    Number      userID      The user_id of the user to add.
+    @param    String      displayName The name to display for the user in this
+                                      thread.
+    @param    Object      callback    Callback function.  Has one parameter, being
+                                      the thread_users_id.
+    @throws   Exception               If threadID is not an integer.
+    @throws   Exception               If userID is not an integer.
+    @throws   Exception               If displayName is not a string.
+
+ deleteUserFromThread
+
+     Remove user from thread.
+     Callback function has no parameters.
+    
+    @param    Number      threadID    The thread_id from which to delete the user.
+    @param    Number      userID      The user_id to delete.
+    @param    Object      callback    Callback function, which has no parameters.
+    @throws   Exception               If threadID is not an integer.
+    @throws   Exception               If userID is not an integer.
+
+ editThreadProperty
+
+     Edit a thread's property.  Callback function has no parameters.
+    
+    @param    Number              threadID    thread_id of the thread to edit.
+    @param    String              property    Name of property to edit (i.e.,
+                                              column name).
+    @param    String|Number       newvalue    New value.
+    @param    Object              callback    Callback function.  No parameters.
+    @throws   Exception                       If threadID is not an integer.
+    @throws   Exception                       If property is not a string.
+    @throws   Exception                       If newvalue is neither string nor
+                                              number.
+
+ updateMostRecentView
+
+     Update the Unix time of the most recent view of a thread.
+    
+    @access   Public
+    @param    Number      threadID    ID of thread to update.
+    @param    Object      callback    Callback function.  No parameters.
+    @throws   Exception               If threadID is not an integer.
+
+ updateNumberOfViews
+
+     Updates the number of views of a thread.
+    
+    @access   Public
+    @param    Number      threadID    ID of the thread to update.
+    @param    Object      callback    Callback function.  No parameters.
+    @throws   Exception               If threadID is not an integer.
+
+ createPost
+
+     Create a post.
+    
+    @param    Number      threadID    ID of thread in which to create a post.
+    @param    Number      userID      ID of user creating the post.
+    @param    String      content     Content of post.
+    @param    Object      callback    Callback function, with thread_content_id as
+                                      parameter.
+    @throws   Exception               If threadID is not an integer.
+    @throws   Exception               If userID is not an integer.
+    @throws   Exception               If content is not a string.
+
+ editPost
+
+     Edit the contents of a post.
+    
+    @access   Public
+    @param    Number      threadContentID ID of post.
+    @param    String      newcontent      New content of post.
+    @param    Object      callback        Callback function.  No parameters.
+    @throws   Exception                   If threadContentID is not an integer.
+    @throws   Exception                   If newContent is not a string.
+
+ hardDeleteThread
+
+     "Hard delete" means wipe from the server altogether, not just setting
+     is_deleted to 1.
+    
+    @access   Public
+    @param    Number      threadID    ID of thread to delete.
+    @param    Object      callback    Callback function.  No parameters.
+    @throws   Exception               If threadID is not an integer.
+
+ changePassword
+
+     Changes the password to a password-protected thread.
+    
+    @param    Number      threadID        ID of thread of which we change the
+                                          password.
+    @param    String      newPassword     New password.
+    @param    Object      callback        Callback function.  No parameters.
+    @throws   Exception                   If threadID is not an integer.
+    @throws   Exception                   If newPassword is not a string or is a
+                                          nonempty string less than 6 characters.

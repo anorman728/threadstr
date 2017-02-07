@@ -1,0 +1,412 @@
+{
+    "1"  :  {
+            "useDaylightTime":false,
+            "offset":-12,
+            "name": "(GMT-12:00) International Date Line West"                             
+    },
+    "2"  :  {
+            "useDaylightTime":false,
+            "offset":-11,
+            "name": "(GMT-11:00) Midway Island, Samoa"                                     
+    },
+    "3"  :  {
+            "useDaylightTime":false,
+            "offset":-10,
+            "name": "(GMT-10:00) Hawaii"                                                   
+    },
+    "4"  :  {
+            "useDaylightTime":true,
+            "offset":-9,
+            "name": "(GMT-09:00) Alaska"                                                   
+    },
+    "5"  :  {
+            "useDaylightTime":true,
+            "offset":-8,
+            "name": "(GMT-08:00) Pacific Time (US & Canada)"                               
+    },
+    "6"  :  {
+            "useDaylightTime":true,
+            "offset":-8,
+            "name": "(GMT-08:00) Tijuana, Baja California"                                 
+    },
+    "7"  :  {
+            "useDaylightTime":false,
+            "offset":-7,
+            "name": "(GMT-07:00) Arizona"                                                  
+    },
+    "8"  :  {
+            "useDaylightTime":true,
+            "offset":-7  ,
+            "name": "(GMT-07:00) Chihuahua, La Paz, Mazatlan"                              
+    },
+    "9"  :  {
+            "useDaylightTime":true,
+            "offset":-7,
+            "name": "(GMT-07:00) Mountain Time (US & Canada)"                              
+    },
+    "10" :  {
+            "useDaylightTime":false,
+            "offset":-6,
+            "name": "(GMT-06:00) Central America"                                          
+    },
+    "11" :  {
+            "useDaylightTime":true,
+            "offset":-6,
+            "name": "(GMT-06:00) Central Time (US & Canada)"                               
+    },
+    "12" :  {
+            "useDaylightTime":true,
+            "offset":-6,
+            "name": "(GMT-06:00) Guadalajara, Mexico City, Monterrey"                      
+    },
+    "13" :  {
+            "useDaylightTime":false,
+            "offset":-6,
+            "name": "(GMT-06:00) Saskatchewan"                                             
+    },
+    "14" :  {
+            "useDaylightTime":false,
+            "offset":-5,
+            "name": "(GMT-05:00) Bogota, Lima, Quito, Rio Branco"                          
+    },
+    "15" :  {
+            "useDaylightTime":true,
+            "offset":-5,
+            "name": "(GMT-05:00) Eastern Time (US & Canada)"                               
+    },
+    "16" :  {
+            "useDaylightTime":true,
+            "offset":-5,
+            "name": "(GMT-05:00) Indiana (East)"                                           
+    },
+    "17" :  {
+            "useDaylightTime":true,
+            "offset":-4,
+            "name": "(GMT-04:00) Atlantic Time (Canada)"                                   
+    },
+    "18" :  {
+            "useDaylightTime":false,
+            "offset":-4,
+            "name": "(GMT-04:00) Caracas, La Paz"                                          
+    },
+    "19" :  {
+            "useDaylightTime":false,
+            "offset":-4,
+            "name": "(GMT-04:00) Manaus"                                                   
+    },
+    "20" :  {
+            "useDaylightTime":true,
+            "offset":-4,
+            "name": "(GMT-04:00) Santiago"                                                 
+    },
+    "21" :  {
+            "useDaylightTime":true,
+            "offset":-3.5,
+            "name": "(GMT-03:30) Newfoundland"                                             
+    },
+    "22" :  {
+            "useDaylightTime":true,
+            "offset":-3,
+            "name": "(GMT-03:00) Brasilia"                                                 
+    },
+    "23" :  {
+            "useDaylightTime":false,
+            "offset":-3,
+            "name": "(GMT-03:00) Buenos Aires, Georgetown"                                 
+    },
+    "24" :  {
+            "useDaylightTime":true,
+            "offset":-3,
+            "name": "(GMT-03:00) Greenland"                                                
+    },
+    "25" :  {
+            "useDaylightTime":true,
+            "offset":-3,
+            "name": "(GMT-03:00) Montevideo"                                               
+    },
+    "26" :  {
+            "useDaylightTime":true,
+            "offset":-2,
+            "name": "(GMT-02:00) Mid-Atlantic"                                             
+    },
+    "27" :  {
+            "useDaylightTime":false,
+            "offset":-1,
+            "name": "(GMT-01:00) Cape Verde Is."                                           
+    },
+    "28" :  {
+            "useDaylightTime":true,
+            "offset":-1,
+            "name": "(GMT-01:00) Azores"                                                   
+    },
+    "29" :  {
+            "useDaylightTime":false,
+            "offset":0,
+            "name": "(GMT+00:00) Casablanca, Monrovia, Reykjavik"                          
+    },
+    "30" :  {
+            "useDaylightTime":true,
+            "offset":0,
+            "name": "(GMT+00:00) Greenwich Mean Time : Dublin, Edinburgh, Lisbon, London"  
+    },
+    "31" :  {
+            "useDaylightTime":true,
+            "offset":1,
+            "name": "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna"         
+    },
+    "32" :  {
+            "useDaylightTime":true,
+            "offset":1,
+            "name": "(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague"        
+    },
+    "33" :  {
+            "useDaylightTime":true,
+            "offset":1,
+            "name": "(GMT+01:00) Brussels, Copenhagen, Madrid, Paris"                      
+    },
+    "34" :  {
+            "useDaylightTime":true,
+            "offset":1,
+            "name": "(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb"                         
+    },
+    "35" :  {
+            "useDaylightTime":true,
+            "offset":1,
+            "name": "(GMT+01:00) West Central Africa"                                      
+    },
+    "36" :  {
+            "useDaylightTime":true,
+            "offset":2,
+            "name": "(GMT+02:00) Amman"                                                    
+    },
+    "37" :  {
+            "useDaylightTime":true,
+            "offset":2,
+            "name": "(GMT+02:00) Athens, Bucharest, Istanbul"                              
+    },
+    "38" :  {
+            "useDaylightTime":true,
+            "offset":2,
+            "name": "(GMT+02:00) Beirut"                                                   
+    },
+    "39" :  {
+            "useDaylightTime":true,
+            "offset":2,
+            "name": "(GMT+02:00) Cairo"                                                    
+    },
+    "40" :  {
+            "useDaylightTime":false,
+            "offset":2,
+            "name": "(GMT+02:00) Harare, Pretoria"                                         
+    },
+    "41" :  {
+            "useDaylightTime":true,
+            "offset":2,
+            "name": "(GMT+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius"            
+    },
+    "42" :  {
+            "useDaylightTime":true,
+            "offset":2,
+            "name": "(GMT+02:00) Jerusalem"                                                
+    },
+    "43" :  {
+            "useDaylightTime":true,
+            "offset":2,
+            "name": "(GMT+02:00) Minsk"                                                    
+    },
+    "44" :  {
+            "useDaylightTime":true,
+            "offset":2,
+            "name": "(GMT+02:00) Windhoek"                                                 
+    },
+    "45" :  {
+            "useDaylightTime":false,
+            "offset":3,
+            "name": "(GMT+03:00) Kuwait, Riyadh, Baghdad"                                  
+    },
+    "46" :  {
+            "useDaylightTime":true,
+            "offset":3,
+            "name": "(GMT+03:00) Moscow, St. Petersburg, Volgograd"                        
+    },
+    "47" :  {
+            "useDaylightTime":false,
+            "offset":3,
+            "name": "(GMT+03:00) Nairobi"                                                  
+    },
+    "48" :  {
+            "useDaylightTime":false,
+            "offset":3,
+            "name": "(GMT+03:00) Tbilisi"                                                  
+    },
+    "49" :  {
+            "useDaylightTime":true,
+            "offset":3.5,
+            "name": "(GMT+03:30) Tehran"                                                   
+    },
+    "50" :  {
+            "useDaylightTime":false,
+            "offset":4,
+            "name": "(GMT+04:00) Abu Dhabi, Muscat"                                        
+    },
+    "51" :  {
+            "useDaylightTime":true,
+            "offset":4,
+            "name": "(GMT+04:00) Baku"                                                     
+    },
+    "52" :  {
+            "useDaylightTime":true,
+            "offset":4,
+            "name": "(GMT+04:00) Yerevan"                                                  
+    },
+    "53" :  {
+            "useDaylightTime":false,
+            "offset":4.5,
+            "name": "(GMT+04:30) Kabul"                                                    
+    },
+    "54" :  {
+            "useDaylightTime":true,
+            "offset":5,
+            "name": "(GMT+05:00) Yekaterinburg"                                            
+    },
+    "55" :  {
+            "useDaylightTime":false,
+            "offset":5,
+            "name": "(GMT+05:00) Islamabad, Karachi, Tashkent"                             
+    },
+    "56" :  {
+            "useDaylightTime":false,
+            "offset":5.5,
+            "name": "(GMT+05:30) Sri Jayawardenapura"                                      
+    },
+    "57" :  {
+            "useDaylightTime":false,
+            "offset":5.5,
+            "name": "(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi"                      
+    },
+    "58" :  {
+            "useDaylightTime":false,
+            "offset":5.75,
+            "name": "(GMT+05:45) Kathmandu"                                                
+    },
+    "59" :  {
+            "useDaylightTime":true,
+            "offset":6,
+            "name": "(GMT+06:00) Almaty, Novosibirsk"                                      
+    },
+    "60" :  {
+            "useDaylightTime":false,
+            "offset":6,
+            "name": "(GMT+06:00) Astana, Dhaka"                                            
+    },
+    "61" :  {
+            "useDaylightTime":false,
+            "offset":6.5,
+            "name": "(GMT+06:30) Yangon (Rangoon)"                                         
+    },
+    "62" :  {
+            "useDaylightTime":false,
+            "offset":7,
+            "name": "(GMT+07:00) Bangkok, Hanoi, Jakarta"                                  
+    },
+    "63" :  {
+            "useDaylightTime":true,
+            "offset":7,
+            "name": "(GMT+07:00) Krasnoyarsk"                                              
+    },
+    "64" :  {
+            "useDaylightTime":false,
+            "offset":8,
+            "name": "(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi"                    
+    },
+    "65" :  {
+            "useDaylightTime":false,
+            "offset":8,
+            "name": "(GMT+08:00) Kuala Lumpur, Singapore"                                  
+    },
+    "66" :  {
+            "useDaylightTime":false,
+            "offset":8,
+            "name": "(GMT+08:00) Irkutsk, Ulaan Bataar"                                    
+    },
+    "67" :  {
+            "useDaylightTime":false,
+            "offset":8,
+            "name": "(GMT+08:00) Perth"                                                    
+    },
+    "68" :  {
+            "useDaylightTime":false,
+            "offset":8,
+            "name": "(GMT+08:00) Taipei"                                                   
+    },
+    "69" :  {
+            "useDaylightTime":false,
+            "offset":9,
+            "name": "(GMT+09:00) Osaka, Sapporo, Tokyo"                                    
+    },
+    "70" :  {
+            "useDaylightTime":false,
+            "offset":9,
+            "name": "(GMT+09:00) Seoul"                                                    
+    },
+    "71" :  {
+            "useDaylightTime":true,
+            "offset":9,
+            "name": "(GMT+09:00) Yakutsk"                                                  
+    },
+    "72" :  {
+            "useDaylightTime":false,
+            "offset":9.5,
+            "name": "(GMT+09:30) Adelaide"                                                 
+    },
+    "73" :  {
+            "useDaylightTime":false,
+            "offset":9.5,
+            "name": "(GMT+09:30) Darwin"                                                   
+    },
+    "74" :  {
+            "useDaylightTime":false,
+            "offset":10,
+            "name": "(GMT+10:00) Brisbane"                                                 
+    },
+    "75" :  {
+            "useDaylightTime":true,
+            "offset":10,
+            "name": "(GMT+10:00) Canberra, Melbourne, Sydney"                              
+    },
+    "76" :  {
+            "useDaylightTime":true,
+            "offset":10,
+            "name": "(GMT+10:00) Hobart"                                                   
+    },
+    "77" :  {
+            "useDaylightTime":false,
+            "offset":10,
+            "name": "(GMT+10:00) Guam, Port Moresby"                                       
+    },
+    "78" :  {
+            "useDaylightTime":true,
+            "offset":10,
+            "name": "(GMT+10:00) Vladivostok"                                              
+    },
+    "79" :  {
+            "useDaylightTime":true,
+            "offset":11,
+            "name": "(GMT+11:00) Magadan, Solomon Is., New Caledonia"                      
+    },
+    "80" :  {
+            "useDaylightTime":true,
+            "offset":12,
+            "name": "(GMT+12:00) Auckland, Wellington"                                     
+    },
+    "81" :  {
+            "useDaylightTime":false,
+            "offset":12,
+            "name": "(GMT+12:00) Fiji, Kamchatka, Marshall Is."                            
+    },
+    "82" :  {
+            "useDaylightTime":false,
+            "offset":13,
+            "name": "(GMT+13:00) Nuku'alofa"                                               
+    }
+}

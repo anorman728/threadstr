@@ -1,0 +1,24 @@
+{
+  "name": "threadr",
+  "version": "1.0.0",
+  "description": "Spin up a thread without a message board.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anorman728/threadr.git"
+  },
+  "author": "Andrew Norman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anorman728/threadr/issues"
+  },
+  "homepage": "https://github.com/anorman728/threadr#readme",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "express": "^4.14.0"
+  }
+}

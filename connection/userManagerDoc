@@ -1,0 +1,119 @@
+ validateUserData
+
+     Checks email address and default display name to see if they exist.
+     The callback's only parameter is an array containing what already exists in
+     database (i.e., will be empty array if neither the email address nor the
+     default display name already exists.)
+    
+    @access   Public
+    @param    String      emailAddress        The email address to check.
+    @param    String      defaultDisplayName  The default display name to check.
+    @param    Object      callback            Callback function, with array
+                                              containing what already exists in
+                                              the database as only parameter.
+    @throws   Exception                       If emailAddress is not a string.
+    @throws   Exception                       If emailAddress is not valid format.
+    @throws   Exception                       If defaultDisplayName is not a
+                                              nonempty string.
+
+ addUser
+
+     Adds user to database.  No return value, but the callback function's one
+     parameter is the new user id.
+     Password is not part of attributesJSON because it needs to be treated
+     differently.
+    
+    @access   Public
+    @param    Object      attributesJSON      JSON object of the data to add to
+                                              database.  Keys must be column
+                                              names, like
+                                              {'default_display_name':'username'}.
+                                              Can't include passwords.
+    @param    String      password            The password for the new user.
+                                              (Already salted and hashed on
+                                              frontend, but will do it again.
+    @param    Object      callback            Callback function.  Only one
+                                              parameter, whichis the new user's
+                                              id.
+    @throws   Exception                       If attributesJSON is not a JSON
+                                              object.
+    @throws   Exception                       If email address is not a string.
+    @throws   Exception                       If email address is not valid.
+    @throws   Exception                       If default_display_name is not a
+                                              nonempty string.
+    @throws   Exception                       If default_display_name is not
+                                              alphanumeric.
+    @throws   Exception                       If password is not a string or is
+                                              less than 6 characters.
+    
+
+ changeDefaultName
+
+     Changes the default display name for the defined userID.  Callback function
+     has no parameters.
+    
+    @access   Public
+    @param    Number      userID          The user_id of the user.
+    @param    String      newDefaultName  Name that we want to change to.
+    @param    Object      callback        Callback function.  There are no 
+                                          parameters.                      
+    @throws   Exception                   If userID is not an integer.
+    @throws   Exception                   If newDefaultName is not a nonempty 
+                                          string.                             
+    @throws   Exception                   If newDefaultName is not alphanumeric.
+                                          
+
+ changeEmailAddress
+
+     Change the email address of the defined user.  Callback function has no
+     parameters.
+    
+    @access   Public
+    @param    Number      userID              user_id of the user.
+    @param    String      newEmailAddress     New email address to use.
+    @param    Object      callback            Callback function.  Does not have 
+                                              any parameters.                   
+    @throws   Exception                       If userID is not an integer.                   
+    @throws   Exception                       If newEmailAddress is not valid.
+                                              
+
+ changeTimezone
+
+     Change the timezone of the defined user.  Callback function has no
+     parameters.
+    
+    @access   Public
+    @param    Number      userID          user_id of the user.
+    @param    String      newTimezone     New timezone to use.
+    @param    Object      callback        Callback function.  Does not have any
+                                          parameters.
+    @throws   Exception                   If userID is not an integer.
+    @throws   Exception                   If newTimezone is not a nonempty string.
+
+ changePassword
+
+     Change the password of the defined user.  Callback function has no
+     parameters.
+    
+    @access   Public
+    @param    Number      userID          user_id of the user.
+    @param    String      newPassword     New password to use.
+    @param    Object      callback        Callback function.  Does not have any
+                                          parameters.
+    @throws   Exception                   If userID is not an integer.
+    @throws   Exception                   If newPassword is not a string >= 6
+                                          characters.
+
+ changeEmailVerification
+
+     Change email verification of the defined user.  Callback function has no
+     parameters.
+    
+    @access   Public
+    @param    Number      userID          user_id of the user.
+    @param    Number      validateValue   1 or 0.
+    @param    Object      callback        Callback function.  Does not have any
+                                          parameters.
+    @throws   Exception                   If userUD is not an integer.
+    @throws   Exception                   If validateValue is neither 1 or 0.
+    
