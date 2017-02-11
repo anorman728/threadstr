@@ -124,8 +124,14 @@ function setPageHeader(altText){
 }
 
 function setSystemNotifications(){
-    // Todo: Pull html file containing system notifications.  If empty, return empty string.  Otherwise, create div containing it.
-    systemNotifications = '';
+    // Todo: Move this to static directory so can be changed without restarting the server.
+    var systemNotificationObj = require(__dirname+'/../systemNotifications.json');
+    var systemNotificationMsg = systemNotificationObj['systemMsg'];
+    if (systemNotificationMsg==''){
+        systemNotifications = '';
+    } else {
+        systemNotifications = `<div id="systemNotifications" class="textBox"><h3>System Message</h3><p>${systemNotificationMsg}<p></div>`;
+    }
 }
 
 function googleAdSense(){

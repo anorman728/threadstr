@@ -32,9 +32,6 @@ p {
 #title{
     float:left;
     line-height:var(--objectheight);
-}
-
-#title{
     display:inline-block;
     vertical-align:middle;
 }
@@ -139,7 +136,6 @@ a{
 
 .form{
     text-align:left;
-//  display:table;
 }
 
 .formItem{
@@ -177,4 +173,16 @@ a{
 
 .formSpace{
     height:10%;
+}
+
+.textBox{
+    border-radius: var(--borderradius);
+    border-style:solid;
+    background-color: rgb(255,208,180);
+    width:80%;
+    text-align: center;
+    margin:auto;
+    margin-top:2%;
+    padding: 10px 10px 10px 10px;
+
 }
