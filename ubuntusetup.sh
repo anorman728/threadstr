@@ -13,7 +13,7 @@
 
 # Install nodejs and nodejs packages.
 
-    curl -sL https://deb.nodesource.com/setup_4.x | sudo bash -
+    curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
     apt-get update
     apt-get install -y nodejs build-essential
 
