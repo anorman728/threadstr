@@ -17,7 +17,7 @@
     apt-get update
     apt-get install -y nodejs build-essential
 
-    npm install mysql bscript prompt express client-sessions body-parser nodemailer
+    npm install mysql bcrypt-nodejs prompt express client-sessions body-parser nodemailer
 
 # Wipe previous config if it exists, and recreate new one.
 
