@@ -1,13 +1,10 @@
 var fs = require('fs');
 var filePath = __dirname+'/../config.json'; 
-var blankJSON = {};
-
-//fs.unlinkSync(filePath);
-//
-//
-//fs.writeFile(filePath,JSON.stringify(blankJSON),function(err){
-//    if (err) {console.log(err);}
-//});
+var blankJSON = {
+    "systemMsg" : "",
+    "privateKey" : "",
+    "certificate" : ""
+};
 
 function createConfig(){
     fs.writeFile(filePath,JSON.stringify(blankJSON),function(err){

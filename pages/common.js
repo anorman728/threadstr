@@ -125,7 +125,7 @@ function setPageHeader(altText){
 
 function setSystemNotifications(){
     // Todo: Move this to static directory so can be changed without restarting the server.
-    var systemNotificationObj = require(__dirname+'/../systemNotifications.json');
+    var systemNotificationObj = require(__dirname+'/../config.json');
     var systemNotificationMsg = systemNotificationObj['systemMsg'];
     if (systemNotificationMsg==''){
         systemNotifications = '';

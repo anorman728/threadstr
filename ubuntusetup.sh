@@ -19,7 +19,7 @@
 
     npm install mysql bscript prompt express client-sessions body-parser nodemailer
 
-# Wipe previous config if it exists.
+# Wipe previous config if it exists, and recreate new one.
 
     node ./setup\ scripts/recreateConfig.js
 

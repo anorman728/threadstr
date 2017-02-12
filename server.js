@@ -7,8 +7,11 @@
  *      @method
  *          Either "GET" or "POST" (or another query type if I ever decide to use them).
  *      @query
- *          Value that comes from user in the get or post requests.  Variable
- *          name will be what's attached to body or query object.
+ *          Value that comes from user in the get requests.  Variable name will
+ *          be what's attached to query object.
+ *      @body
+ *          Value that comes from user in post requests.  Variable name will be
+ *          what's attached to the body object.
  *      @send
  *          For routes that are intended to display a page, will simply be
  *          "HTML."  For anything else, will be a data type, like String or
@@ -20,6 +23,8 @@
 var root = __dirname;
 
 var getPW = require(root + '/connection/getPasswords');
+var configData = require(root + '/config.json');
+var fs = require('fs');
 
 getPW.getDatabasePassword(function(password){
     // Set password for database.
@@ -120,8 +125,8 @@ getPW.getDatabasePassword(function(password){
      * Check email and default display name ajax.
      *
      *@method   POST
-     *@query    String      emailAddress
-     *@query    String      defaultDisplayName
+     *@body     String      emailAddress
+     *@body     String      defaultDisplayName
      *@send     String
      */
 
@@ -137,8 +142,8 @@ getPW.getDatabasePassword(function(password){
      * Response sent back will simply be "Success."
      *
      *@method   POST
-     *@query    Object      data        JSON object with data for new user.
-     *@query    String      password    New user's password.
+     *@body     Object      data        JSON object with data for new user.
+     *@body     String      password    New user's password.
      *@send     String
      */
 
@@ -158,7 +163,7 @@ getPW.getDatabasePassword(function(password){
      * The send value is true if the emailaddress is found and false if it isn't.
      *
      *@method   POST
-     *@query    String      emailAddress
+     *@body     String      emailAddress
      *@send     Boolean
      */
 
@@ -208,8 +213,8 @@ getPW.getDatabasePassword(function(password){
      * verified" if the user has not been verified.
      *
      *@method   POST
-     *@query    String      emailAddress    Email address of user logging in.
-     *@query    String      password        User's password.
+     *@body     String      emailAddress    Email address of user logging in.
+     *@body     String      password        User's password.
      *@send     String
      */
 
@@ -241,7 +246,7 @@ getPW.getDatabasePassword(function(password){
          * Send email to reset password.  Meant to be used as Ajax call.
          *
          *@method   POST
-         *@query    String      emailAddress    Email address of account to reset.
+         *@body     String      emailAddress    Email address of account to reset.
          *@sends    String                      "Success" if email address
          *                                      exists in database and will send
          *                                      an email to the user.
@@ -301,9 +306,9 @@ getPW.getDatabasePassword(function(password){
          * and "expired" if time has expired.
          *
          *@method   POST
-         *@query    String      newPassword             Password to change to.
-         *@query    String      userId                  User id to change.
-         *@query    String      resetPasswordConfirm    Confirmation code.
+         *@body     String      newPassword             Password to change to.
+         *@body     String      userId                  User id to change.
+         *@body     String      resetPasswordConfirm    Confirmation code.
          *@send     String
          */
 
@@ -344,7 +349,23 @@ getPW.getDatabasePassword(function(password){
     });
 
     // Start server.
-        app.listen(8000,function(){
-            console.log("Listening...");
-        });
+
+        var listeningMsg = "Listening...";
+
+        if (configData['privateKey']=='' || configData['certificate']==''){
+            app.listen(8000,function(){
+                console.log(listeningMsg);
+            });
+        } else {
+            var privateKey = fs.readFileSync(configData['privateKey']);
+            var certificate = fs.readFileSync(configData['certificate']);
+            const https = require('https');
+            https.createServer({
+                key: privateKey,
+                cert: certificate
+            },app).listen(8000,function(){
+                console.log(listeningMsg);
+            });
+        }
+
 });
