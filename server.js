@@ -23,7 +23,6 @@
 var root = __dirname;
 
 var getPW = require(root + '/connection/getPasswords');
-var configData = require(root + '/config.json');
 var fs = require('fs');
 
 getPW.getDatabasePassword(function(password){
@@ -350,22 +349,8 @@ getPW.getDatabasePassword(function(password){
 
     // Start server.
 
-        var listeningMsg = "Listening...";
-
-        if (configData['privateKey']=='' || configData['certificate']==''){
-            app.listen(8000,function(){
-                console.log(listeningMsg);
-            });
-        } else {
-            var privateKey = fs.readFileSync(configData['privateKey']);
-            var certificate = fs.readFileSync(configData['certificate']);
-            const https = require('https');
-            https.createServer({
-                key: privateKey,
-                cert: certificate
-            },app).listen(8000,function(){
-                console.log(listeningMsg);
-            });
-        }
+        app.listen(8080,function(){
+            console.log("Listening...");
+        });
 
 });

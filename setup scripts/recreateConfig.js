@@ -1,9 +1,7 @@
 var fs = require('fs');
 var filePath = __dirname+'/../config.json'; 
 var blankJSON = {
-    "systemMsg" : "",
-    "privateKey" : "",
-    "certificate" : ""
+    "systemMsg" : ""
 };
 
 function createConfig(){
