@@ -11,13 +11,22 @@
         exit 1
     fi
 
-# Install nodejs and nodejs packages.
+# Install nodejs.
 
     curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
     apt-get update
     apt-get install -y nodejs build-essential
 
-    npm install mysql bcrypt-nodejs prompt express client-sessions body-parser nodemailer
+    # npm install mysql bcrypt-nodejs prompt express client-sessions body-parser nodemailer
+
+        # Keeping this here for reference, but no longer installing package
+        # during Threadstr installation-- Versioning them instead.
+        # Installing npm packages during installation caused unpredictability,
+        # because the package installed may not be the same version as used by
+        # Threadstr during development.
+
+        # TODO: Actually record the packages that are used the way that they're
+        # supposed to be recorded in Node.js projects.
 
 # Wipe previous config if it exists, and recreate new one.
 
