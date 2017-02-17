@@ -1,7 +1,10 @@
 var fs = require('fs');
 var filePath = __dirname+'/../config.json'; 
+var bcrypt = require('bcrypt-nodejs');
+var secretKey = bcrypt.genSaltSync();
 var blankJSON = {
-    "systemMsg" : ""
+    "systemMsg" : "",
+    "secretKey" : secretKey
 };
 
 function createConfig(){

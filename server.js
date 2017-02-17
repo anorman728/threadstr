@@ -25,6 +25,9 @@ var root = __dirname;
 var getPW = require(root + '/connection/getPasswords');
 var fs = require('fs');
 
+var config = require(root + '/config.json');
+var secretKey = config['secretKey'];
+
 getPW.getDatabasePassword(function(password){
     // Set password for database.
         dbPassword = password;
@@ -57,7 +60,7 @@ getPW.getDatabasePassword(function(password){
 
         app.use(clientSessions({
             cookieName: 'session',
-            secret: 'h$998lasdbvsku^kj82inq',
+            secret: secretKey,
             duration: 1000*60*60*24*60
         }));
 
