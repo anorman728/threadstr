@@ -7,7 +7,7 @@ connection  = mysql.createConnection({
     host    : 'localhost'       ,
     user    : 'root'            ,
     password: global.dbPassword ,
-    database: "threadr"         ,
+    database: "threadstr"       ,
 });
 
 /** Query the database every five seconds to keep the connection from closing. */

@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS threadr;
-CREATE DATABASE threadr;
+DROP DATABASE IF EXISTS threadstr;
+CREATE DATABASE threadstr;
     
-USE threadr;
+USE threadstr;
 
 CREATE TABLE
     threads (
