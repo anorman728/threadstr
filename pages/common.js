@@ -57,6 +57,7 @@ function setHtmlHeader(title,useMathJax,scripts){
         <head>
             <title>${title}</title>
             <link rel="stylesheet" type="text/css" href="common.css">
+            <link rel="icon" href="favicon.ico"> 
             ${scriptString}
         </head>
     `;
