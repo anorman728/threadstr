@@ -2,7 +2,7 @@
  * Functions to manipulate database.
  */
 
- var arrayTools = require(__dirname+'/../jsTools/arrayTools');
+var arrayTools = require(__dirname+'/../jsTools/arrayTools');
 
 /**
  * Checks email address and default display name to see if they exist.
@@ -454,7 +454,7 @@ function checkEmailAndPassword(emailAddress,password,callback){
         WHERE
             email_address = ?
     `;
-    columnVals = [emailAddress];
+    var columnVals = [emailAddress];
     con.query(queryDum,columnVals,function(err,rows,fields){
         if (err) console.log(err);
         if (rows.length==0){
@@ -471,6 +471,59 @@ function checkEmailAndPassword(emailAddress,password,callback){
                 }
             } else {
                 callback('no match');
+            }
+        }
+    });
+}
+
+/**
+ * Check id and password, for actions needing secondary password verification.
+ * Callback function has one parameter:  "True" if id and password match and
+ * "false" if they don't.
+ *
+ *@access   Public
+ *@param    Number      userID
+ *@param    String      password
+ *@param    Function    callback
+ *@throws   Exception               If userID is not an integer.
+ *@throws   Exception               If password is not a string.
+ *@throws   Exception               If callback is not a function.
+ */
+
+function checkIdAndPassword(userID,password,callback){
+    /* Exceptions */
+        var func = arguments.callee.toString().match(/function ([^\(]+)/)[1];
+        if (!Number.isInteger(userID)){
+            throw `${func}: userId must be an integer.`;
+        }
+        if (typeof password != 'string'){
+            throw `${func}: password must be string.`;
+        }
+        if (typeof callback != 'function'){
+            throw `${func}: callback must be a function.`;
+        }
+    var queryDum = `
+        SELECT
+            password_hash,
+            password_salt
+        FROM
+            users
+        WHERE
+            user_id = ?
+    `;
+    var columnVals = [userID];
+    con.query(queryDum,columnVals,function(err,rows,fields){
+        if (err) console.log(err);
+        if (rows.length==0){
+            callback(false);
+        } else {
+            var bcrypt = require('bcrypt-nodejs');
+            var salt = rows[0]['password_salt'];
+            var passwordHash = bcrypt.hashSync(password,salt);
+            if (passwordHash==rows[0]['password_hash']){
+                callback(true);
+            } else {
+                callback(false);
             }
         }
     });
@@ -725,6 +778,7 @@ module.exports = {
     changeEmailVerification     : changeEmailVerification   ,
     verifyUser                  : verifyUser                ,
     checkEmailAndPassword       : checkEmailAndPassword     ,
+    checkIdAndPassword          : checkIdAndPassword        ,
     resetPasswordResetInfo      : resetPasswordResetInfo    ,
     resetPasswordConfirmCheck   : resetPasswordConfirmCheck
 };

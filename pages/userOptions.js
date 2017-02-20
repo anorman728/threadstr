@@ -1,4 +1,4 @@
-// Options Page.
+/* Options page */
 
 var gui = require(__dirname+'/gui');
 var db = require(__dirname+'/../connection/userManager');
@@ -102,11 +102,12 @@ function loggedIn(data){
 
 function resetPasswordForm(){
     var resetPasswordTitle         = gui.textItem('<h4>Reset Password</h3>','resetPasswordTitle');
+    var currentPassword            = gui.textInput('Current password:','currentPassword',true);
     var newPassword                = gui.textInput('New password:','newPassword',true);
     var confirmPassword            = gui.textInput('Confirm password:','confirmPassword',true);
     var resetPasswordSubmitButton  = gui.buttonInput("Reset Password","resetPasswordSubmit");
 
-    var returnArr = [resetPasswordTitle,newPassword,confirmPassword,resetPasswordSubmitButton];
+    var returnArr = [resetPasswordTitle,currentPassword,newPassword,confirmPassword,resetPasswordSubmitButton];
     
     return returnArr;
 }

@@ -330,6 +330,33 @@ getPW.getDatabasePassword(function(password){
             });
         });
 
+        /**
+         * Resets password of logged in user (i.e., through the "User Options"
+         * page.
+         * If currentPassword is a match, will send "true" and change the
+         * password.
+         * If not, will just send "false".
+         *
+         *@method   POST
+         *@body     String      currentPassword     Confirm current password.
+         *@body     String      newPassword         Password to change to.
+         *@send     Boolean
+         */
+
+        app.post('/resetPasswordLoggedInAction',function(req,res){
+            var db = require(root+'/connection/userManager');
+            var userID = req.session.userID;
+            db.checkIdAndPassword(userID,req.body.currentPassword,function(result){
+                if (result==true){
+                    db.changePassword(userID,req.body.newPassword,function(){
+                        res.send(true);
+                    });
+                } else {
+                    res.send(false);
+                }
+            });
+        });
+
     /**
      * Options page.  No queries.
      *
@@ -350,7 +377,7 @@ getPW.getDatabasePassword(function(password){
         });
     });
 
-    // Start server.
+    /* Start server. */
 
         app.listen(8080,function(){
             console.log("Listening...");

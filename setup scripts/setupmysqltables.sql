@@ -67,6 +67,11 @@ CREATE TABLE
             UNSIGNED
             COMMENT "Unix time of when thread was created."
         ,
+        mathjax_enabled
+            TINYINT
+            DEFAULT 0
+            COMMENT "Boolean.  1 if MathJax is enabled, 0 if not."
+        ,
         deleted
             TINYINT(1)
             COMMENT "Determines whether or not a thread is deleted."

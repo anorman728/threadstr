@@ -195,7 +195,7 @@ $(document).ready(function(){
 });
 
 /**
- * Reset field.
+ * Reset field message.
  *
  *@param    String      fieldName       Field to clear.
  */
@@ -221,7 +221,7 @@ function passwordLength(password){
 }
 
 /**
- * Display message if password is not correct.
+ * Display message if password length is not correct.
  *
  *@param    String      passwordField       Name of the password field.
  */
