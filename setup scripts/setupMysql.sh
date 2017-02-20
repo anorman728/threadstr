@@ -4,7 +4,7 @@
 
 # Secure installation of MySQL, if y is selected.
 
-    echo "Do you want to do a secure installation of MySQL? (Y/n)"
+    printf "\n\n\nDo you want to do a secure installation of MySQL? (Y/n)\n"
     read ans
     if [ "$ans" != "n" ] ; then
         mysql_secure_installation
