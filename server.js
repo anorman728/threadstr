@@ -34,6 +34,7 @@ getPW.getDatabasePassword(function(password){
     // Create connection
         var connection = require(root+'/connection/connection');
         con = connection.con;
+        queryXSS = connection.queryXSS;
 
         var express = require('express');
         var bodyParser = require('body-parser');

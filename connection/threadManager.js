@@ -98,7 +98,7 @@ function createThread(attributesJSON,password,callback){
         )
     `;
 
-    con.query(queryDum,columnValuesArr,function(err,result){
+    queryXSS(queryDum,columnValuesArr,function(err,result){
         if (err) {console.log(err);}
         var queryDum= `
             INSERT INTO
@@ -113,7 +113,7 @@ function createThread(attributesJSON,password,callback){
         `;
         var returnVal = result.insertId;
         var values = [returnVal,attributesJSON['owner_user_id']];
-        con.query(queryDum,values,function(err,result){
+        queryXSS(queryDum,values,function(err,result){
             if (err) {console.log(err);}
             callback(returnVal);
         });
@@ -154,7 +154,7 @@ function isUserInThread(threadID,userID,callback){
             user_id   = ?
     `;
     var values = [threadID,userID];
-    con.query(queryDum,values,function(err,rows){
+    queryXSS(queryDum,values,function(err,rows){
         if (err) {console.log(err);}
         if (rows.length!=0){
             callback(true);
@@ -209,7 +209,7 @@ function addUserToThread(threadID,userID,displayName,callback){
                 )
             `;
             var values = [threadID,userID,displayName];
-            con.query(queryDum,values,function(err,results){
+            queryXSS(queryDum,values,function(err,results){
                 if (err) {console.log(err);}
                 callback(results.insertId);
             });
@@ -247,7 +247,7 @@ function deleteUserFromThread(threadID,userID,callback){
 
     var values = [threadID,userID];
 
-    con.query(queryDum,values,function(err){
+    queryXSS(queryDum,values,function(err){
         if (err) {console.log(err);}
         callback();
     });
@@ -295,7 +295,7 @@ function editThreadProperty(threadID,property,newvalue,callback){
             thread_id = ?
     `;
     var values = [newvalue,threadID];
-    con.query(queryDum,values,function(err){
+    queryXSS(queryDum,values,function(err){
         if (err) {console.log(err);}
         callback();
     });
@@ -324,7 +324,7 @@ function updateMostRecentView(threadID,callback){
             thread_id = ?
     `;
     var values = [threadID];
-    con.query(queryDum,values,function(err){
+    queryXSS(queryDum,values,function(err){
         if (err) {console.log(err);}
         callback();
     });
@@ -353,7 +353,7 @@ function updateNumberOfViews(threadID,callback){
             thread_id = ?
     `;
     var values = [threadID];
-    con.query(queryDum,values,function(err){
+    queryXSS(queryDum,values,function(err){
         if (err) {console.log(err);}
         callback();
     });
@@ -402,7 +402,7 @@ function createPost(threadID,userID,content,callback){
         )
     `;
     var values = [threadID,userID,content];
-    con.query(queryDum,values,function(err,result){
+    queryXSS(queryDum,values,function(err,result){
         if (err) {console.log(err);}
         callback(result.insertId);
     });
@@ -436,7 +436,7 @@ function editPost(threadContentID,newContent,callback){
             thread_content_id = ?
     `;
     var values = [newContent,threadContentID];
-    con.query(queryDum,values,function(err){
+    queryXSS(queryDum,values,function(err){
         if (err) {console.log(err);}
         callback();
     });
@@ -464,7 +464,7 @@ function hardDeleteThread(threadID,callback){
             thread_id = ?
     `;
     var values = [threadID];
-    con.query(queryDum,values,function(err){
+    queryXSS(queryDum,values,function(err){
         if (err) {console.log(err);}
         var queryDum = `
             DELETE FROM
@@ -472,7 +472,7 @@ function hardDeleteThread(threadID,callback){
             WHERE
                 thread_id = ?
         `;
-        con.query(queryDum,values,function(){
+        queryXSS(queryDum,values,function(){
             if (err) {console.log(err);}
             var queryDum = `
                 DELETE FROM
@@ -480,7 +480,7 @@ function hardDeleteThread(threadID,callback){
                 WHERE
                     thread_id = ?
             `;
-            con.query(queryDum,values,function(){
+            queryXSS(queryDum,values,function(){
                 if (err) {console.log(err);}
                 callback();
             });
@@ -518,7 +518,7 @@ function changePassword(threadID,newPassword,callback){
             thread_id = ?
     `;
     var values = [threadID];
-    con.query(queryDum,values,function(err,rows){
+    queryXSS(queryDum,values,function(err,rows){
         if (err) {console.log(err);}
         var salt = rows[0]['password_salt'];
         if (newPassword!=''){
@@ -537,7 +537,7 @@ function changePassword(threadID,newPassword,callback){
                 password_protected = ${passwordProtected}
         `;
         values = [passwordHash];
-        con.query(queryDum,values,function(err){
+        queryXSS(queryDum,values,function(err){
             if (err) {console.log(err);}
             callback();
         });

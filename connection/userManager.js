@@ -28,6 +28,7 @@ function validateUserData(emailAddress,defaultDisplayName,callback){
             throw "emailAddress must be string.";
         }
         if (!(/\S+@\S+\.\S+/.test(emailAddress))){
+            console.log(emailAddress);//dmz1
             throw "Not a valid email address.";
         }
         if (typeof defaultDisplayName != "string" || defaultDisplayName ==''){
@@ -37,8 +38,8 @@ function validateUserData(emailAddress,defaultDisplayName,callback){
 
     var queryDum = `
         SELECT
-            default_display_name    ,
-            email_address
+            count(default_display_name) as default_display_name ,
+            count(email_address) as email_address
         FROM
             users
         WHERE
@@ -46,18 +47,18 @@ function validateUserData(emailAddress,defaultDisplayName,callback){
             email_address           = ?
     `;
 
+    defaultDisplayName = defaultDisplayName.trim();
+    emailAddress = emailAddress.trim();
     var columnValues = [defaultDisplayName,emailAddress];
 
-    con.query(queryDum,columnValues,function(err,rows,fields){
+    queryXSS(queryDum,columnValues,function(err,rows,fields){
         if (err) console.log(err);
         var returnArr = [];
-        for (var i = 0, len = rows.length; i < len; i++) {
-          if (rows[i]['default_display_name']==defaultDisplayName){
-            returnArr.push('default_display_name');
-          }
-          if (rows[i]['email_address']==emailAddress){
-            returnArr.push('email_address');
-          }
+        var checkArr = ['default_display_name','email_address'];
+        for (var i=0,len=checkArr.length;i<len;i++){
+            if (rows[0][checkArr[i]]>0){
+                returnArr.push(checkArr[i]);
+            }
         }
         callback(returnArr);
     });
@@ -97,7 +98,7 @@ function validateUserData(emailAddress,defaultDisplayName,callback){
  */
 
 function addUser(attributesJSON,password,callback){
-    // Throw exceptions.
+    /* Exceptions */
         if (typeof attributesJSON!='object' || attributesJSON.constructor!={}.constructor){
             throw "attributesJSON must be JSON object.";
         }
@@ -119,6 +120,11 @@ function addUser(attributesJSON,password,callback){
         if (typeof callback!='function'){
             throw "callback must be function.";
         }
+    for (var key in attributesJSON){
+        if (typeof attributesJSON[key] == 'string'){
+            attributesJSON[key] = attributesJSON[key].trim();
+        }
+    }
     var returnVal = validateUserData(attributesJSON['email_address'],attributesJSON['default_display_name'],function(returnArr){
         if (returnArr.length!=0){
             throw "Properties already exist: "+returnArr.join(', ');
@@ -155,7 +161,7 @@ function addUser(attributesJSON,password,callback){
                     '${verifyCode}'
                 )
             `;
-            con.query(queryDum,columnValuesArr,function(err,result){
+            queryXSS(queryDum,columnValuesArr,function(err,result){
                 if (err) {console.log(err);}
                 callback(result.insertId,verifyCode);
             });
@@ -192,7 +198,7 @@ function getUserRowFromEmailAddress(emailAddress,callback){
             email_address = ?
     `;
     var columnValues = [emailAddress];
-    con.query(queryDum,columnValues,function(err,rows,fields){
+    queryXSS(queryDum,columnValues,function(err,rows,fields){
         if (err) console.log(err);
         if (rows.length==0){
             callback(false);
@@ -230,7 +236,7 @@ function getUserRowFromId(userId,callback){
             user_id = ?
     `;
     var columnValues = [userId];
-    con.query(queryDum,columnValues,function(err,rows,fields){
+    queryXSS(queryDum,columnValues,function(err,rows,fields){
         if (err) console.log(err);
         if (rows.length==0){
             callback(false);
@@ -268,7 +274,7 @@ function checkVerifyUser(userId,verifyCode,callback){
             user_id = ?
     `;
     var columnValues = [userId];
-    con.query(queryDum,columnValues,function(err,rows,fields){
+    queryXSS(queryDum,columnValues,function(err,rows,fields){
         if (err) console.log(err);
         callback((rows[0]['verify_code']==verifyCode));
     });
@@ -302,7 +308,7 @@ function verifyUser(userId,verifyCode,callback){
                     user_id = ?
             `;
             var columnValues = [userId];
-            con.query(queryDum,columnValues,function(err,result){
+            queryXSS(queryDum,columnValues,function(err,result){
                 if (err) {
                     console.log(err);
                     callback("Unable to connect to database.");
@@ -355,7 +361,7 @@ function resetPasswordResetInfo(userId,secondsOffset,callback){
             user_id = ?
     `;
     var columnVals = [resetPasswordConfirm,userId];
-    con.query(queryDum,columnVals,function(err,rows,fields){
+    queryXSS(queryDum,columnVals,function(err,rows,fields){
         if (err) console.log(err);
         callback(resetPasswordConfirm);
     });
@@ -403,7 +409,7 @@ function resetPasswordConfirmCheck(userId,resetPasswordConfirm,callback){
         WHERE
             user_id = ?
     `;
-    con.query(queryDum,columnVals,function(err,rows,columns){
+    queryXSS(queryDum,columnVals,function(err,rows,columns){
         if (err) console.log(err);
         if (rows[0]['resetPasswordConfirm']==0){
             callback('no match');
@@ -455,7 +461,7 @@ function checkEmailAndPassword(emailAddress,password,callback){
             email_address = ?
     `;
     var columnVals = [emailAddress];
-    con.query(queryDum,columnVals,function(err,rows,fields){
+    queryXSS(queryDum,columnVals,function(err,rows,fields){
         if (err) console.log(err);
         if (rows.length==0){
             callback("no match");
@@ -512,7 +518,7 @@ function checkIdAndPassword(userID,password,callback){
             user_id = ?
     `;
     var columnVals = [userID];
-    con.query(queryDum,columnVals,function(err,rows,fields){
+    queryXSS(queryDum,columnVals,function(err,rows,fields){
         if (err) console.log(err);
         if (rows.length==0){
             callback(false);
@@ -569,7 +575,7 @@ function changeDefaultName(userID,newDefaultName,callback){
                     user_id = ?
             `;
             var columnValues = [newDefaultName,userID];
-            con.query(queryDum,columnValues,function(err,result){
+            queryXSS(queryDum,columnValues,function(err,result){
                 if (err) {console.log(err);}
                 callback();
             });
@@ -612,7 +618,7 @@ function changeEmailAddress(userID,newEmailAddress,callback){
                     user_id = ?
             `;
             var columnValues = [newEmailAddress,userID];
-            con.query(queryDum,columnValues,function(err,result){
+            queryXSS(queryDum,columnValues,function(err,result){
                 if (err) {console.log(err);}
                 callback();
             });
@@ -650,7 +656,7 @@ function changeTimezone(userID,newTimezone,callback){
             user_id = ?
     `
     var columnValues = [newTimezone,userID];
-    con.query(queryDum,columnValues,function(err,result){
+    queryXSS(queryDum,columnValues,function(err,result){
         if (err) {console.log(err);}
         callback();
     });
@@ -688,7 +694,7 @@ function changePassword(userID,newPassword,callback){
                 user_id = ?
         `;
         var columnValues = [userID];
-        con.query(queryDum,columnValues,function(err,rows,fields){
+        queryXSS(queryDum,columnValues,function(err,rows,fields){
             if (err) {console.log(err);}
             var salt = rows[0]['password_salt'];
             // Salt and set new password.
@@ -704,7 +710,7 @@ function changePassword(userID,newPassword,callback){
                     user_id = ?
             `;
             columnValues = [passwordHash,userID];
-            con.query(queryDum,columnValues,function(err,result){
+            queryXSS(queryDum,columnValues,function(err,result){
                 if (err) {console.log(err);}
                 callback();
             });
@@ -742,13 +748,11 @@ function changeEmailVerification(userID,validateValue,callback){
             user_id = ?
     `;
     var columnValues = [validateValue,userID];
-    con.query(queryDum,columnValues,function(err,result){
+    queryXSS(queryDum,columnValues,function(err,result){
         if (err) {console.log(err);}
         callback();
     });
 }
-
-/** Private functions */
 
 /**
  * "Cleans" a value for the GET method, meaning will remove anything that will
