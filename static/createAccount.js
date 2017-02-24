@@ -57,7 +57,7 @@ $(document).ready(function(){
 
 });
 
-var createAccountMessage = '<p>An email has been sent to your address.  Please verify to activate your account.</p> <p><a href="#" onclick="resendEmail();return false;">Click here</a> to resend email.</p>'
+var createAccountMessage = '<p>An email has been sent to your address.  Please verify to activate your account.</p> <p><a href="#" onclick="resendEmail();return false;">Click here</a> to resend email.</p>';
 
 /**
  * Check if passwords match for this particular page.
@@ -114,17 +114,6 @@ function warnDefaultDisplayNameNotAlphanumericPlusSpaces(){
 }
 
 /**
- * Warn if email address is invalid.
- */
-
-function warnBadEmailAddress(){
-    var dumStr = $('#emailAddressValue').val();
-    if (!(checkEmailAddress(dumStr) ||dumStr=='')){
-        $('#emailAddressMessage').html('<p style="color:red;">Invalid email address.</p>');
-    }
-}
-
-/**
  * Warn if email address is already taken.
  */
 
@@ -138,26 +127,6 @@ function warnValidateEmail(){
             for (i=0,len=data.length;i<len;i++){
                 if (data[i]=='email_address'){
                     $('#emailAddressMessage').html("<p style=\"color:red;\">This email address is already taken.</p>");
-                }
-            }
-        });
-    }
-}
-
-/**
- * Warn if default display name is already taken.
- */
-
-function warnValidateDefaultDisplayName(){
-    var emailAddress = "fakeemail@fakeemail.fakemail";
-    var defaultDisplayName = $('#defaultDisplayNameValue').val();
-
-    if (defaultDisplayName!=''){
-        validateUser(emailAddress,defaultDisplayName,function(data){
-            var i,len;
-            for (i=0,len=data.length;i<len;i++){
-                if (data[i]=='default_display_name'){
-                    $('#defaultDisplayNameMessage').html("<p style=\"color:red;\">This default display name is already taken.</p>");
                 }
             }
         });
@@ -180,10 +149,10 @@ function trigger(){
 
     warnDefaultDisplayNameNotAlphanumericPlusSpaces();
 
-    warnBadEmailAddress();
+    warnEmailAddressInvalid($('#emailAddressValue').val(),'emailAddress');
 
-    warnValidateEmail();
-    warnValidateDefaultDisplayName();
+    warnEmailAddressTaken($('#emailAddressValue').val(),'emailAddress');
+    warnDefaultDisplayNameTaken($('#defaultDisplayNameValue').val(),'defaultDisplayName');
 }
 
 /**
@@ -269,3 +238,4 @@ function resendEmail(){
         }
     });
 }
+

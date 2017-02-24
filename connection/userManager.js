@@ -1,5 +1,6 @@
 /*
  * Functions to manipulate database.
+ * TODO: Reorganize order of functions.
  */
 
 var arrayTools = require(__dirname+'/../jsTools/arrayTools');
@@ -584,27 +585,41 @@ function changeDefaultName(userID,newDefaultName,callback){
 }
 
 /**
- * Change the email address of the defined user.  Callback function has no
- * parameters.
+ * Add email address to "unverified_email_address" column (which will move to
+ * the "email_address" column once it's been verified through email).
+ * Callback function has one parameter-- The value put into the
+ * change_email_verify_code column.
  *
- *@access   Public
+ *@access   Private
  *@param    Number      userID              user_id of the user.
  *@param    String      newEmailAddress     New email address to use.
- *@param    Object      callback            Callback function.  Does not have 
+ *@param    Number      expirySeconds       Number of seconds before email
+ *                                          change expires.
+ *@param    Function    callback            Callback function.  Does not have 
  *                                          any parameters.                   
- *@throws   Exception                       If userID is not an integer.                   
+ *@throws   Exception                       If userID is not an integer.
  *@throws   Exception                       If newEmailAddress is not valid.
+ *@throws   Exception                       If expirySeconds is not an integer.
+ *@throws   Exception                       If callback is not a function.
  *                                          
  */
 
-function changeEmailAddress(userID,newEmailAddress,callback){
-    // Throw exceptions
+function addUnverifiedEmailAddress(userID,newEmailAddress,expirySeconds,callback){
+    /* Exceptions */
         if (!Number.isInteger(userID)){
             throw "userID must be integer.";
         }
         if (typeof newEmailAddress!='string' || !(/^\S+@\S+\.\S+$/.test(newEmailAddress))){
             throw "Not a valid email address.";
         }
+        if (typeof expirySeconds != "number" || !Number.isInteger(expirySeconds)){
+            throw "expirySeconds must be integer.";
+        }
+        if (typeof callback != 'function'){
+            throw "callback must be function.";
+        }
+    bcrypt = require('bcrypt-nodejs');
+    var verifyCode = cleanGetValue(bcrypt.genSaltSync());
     validateUserData(newEmailAddress,'dummyname',function(returnArr){
         if (arrayTools.arrayIncludes(returnArr,'email_address')){
             throw "newEmailAddress already exists.";
@@ -613,14 +628,16 @@ function changeEmailAddress(userID,newEmailAddress,callback){
                 UPDATE
                     users
                 SET
-                    email_address = ?
+                    unverified_email_address    = ?                ,
+                    change_email_verify_code    = "${verifyCode}"  ,
+                    change_email_limit          = UNIX_TIMESTAMP() + ${expirySeconds}
                 WHERE
                     user_id = ?
             `;
             var columnValues = [newEmailAddress,userID];
             queryXSS(queryDum,columnValues,function(err,result){
                 if (err) {console.log(err);}
-                callback();
+                callback(verifyCode);
             });
         }
     });
@@ -755,6 +772,155 @@ function changeEmailVerification(userID,validateValue,callback){
 }
 
 /**
+ * Call addUnverifiedEmailAddress if and only if ID and password match and new
+ * email address isn't already taken.
+ * Callback function has one parameter-- verification code if it matches, empty
+ * string if it doesn't.
+ * Could be refactored-- there's a little bit of pyramid of death here.
+ *
+ *@access   Public
+ *@param    Integer     userID
+ *@param    String      password
+ *@param    String      newEmailAddress
+ *@param    Number      expirySeconds       Number of seconds before expires.
+ *@param    Function    callback
+ *@throws   Exception                       If userID is not an integer.
+ *@throws   Exception                       If password is not a string.
+ *@throws   Exception                       If newEmailAddress is not a string.
+ *@throws   Exception                       If expirySeconds is not an integer.
+ *@throws   Exception                       If callback is not a function.
+ */
+
+function attemptAddUnverifiedEmailAddress(userID,password,newEmailAddress,expirySeconds,callback){
+    /* Exceptions */
+        var func = arguments.callee.toString().match(/function ([^\(]+)/)[1];
+        if (typeof userID != 'number' || !Number.isInteger(userID)){
+            throw `${func}: userID must be integer.`;
+        }
+        if (typeof password != 'string'){
+            throw `${func}: password must be string.`;
+        }
+        if (typeof newEmailAddress != 'string'){
+            throw `${func}: newEmailAddress must be string.`;
+        }
+        if (typeof expirySeconds != 'number' || !Number.isInteger(expirySeconds)){
+            throw `${func}: expirySeconds must be integer.`;
+        }
+        if (typeof callback != 'function'){
+            throw `${func}: callback must be function.`;
+        }
+    validateUserData(newEmailAddress,'dummyDisplayName',function(arrDum){
+        var i,len;
+        var exists = false;
+        for (i=0,len=arrDum.length;i<len;i++){
+            if (arrDum[i]=='email_address'){
+                exists = true;
+            }
+        }
+        if (!exists){
+            checkIdAndPassword(userID,password,function(match){
+                if (match){
+                    addUnverifiedEmailAddress(userID,newEmailAddress,expirySeconds,function(data){
+                        callback(data);
+                    });
+                } else {
+                    callback('');
+                }
+            });
+        } else {
+            callback('');
+        }
+    });
+}
+
+/**
+ * Check if verifyCode matches the change_email_verify_code for the given
+ * userID and that time has not expired.
+ * Callback function has one string parameter: "match" if match exists,
+ * "nomatch" if row is not found, and "expired" if row is found but the time has
+ * expired.
+ *
+ *@access   Public
+ *@param    Number      userID
+ *@param    String      verifyCode
+ *@param    Function    callback
+ *@throws   Exception               If userID is not an integer.
+ *@throws   Exception               If verifyCode is not a string.
+ *@throws   Exception               If callback is not a function.
+ */
+
+function checkChangeEmailVerifyCode(userID,verifyCode,callback){
+    /* Exceptions */
+        var func = arguments.callee.toString().match(/function ([^\(]+)/)[1];
+        if (typeof userID != 'number' || !Number.isInteger(userID)){
+            throw `${func}: userID must be a integer.`;
+        }
+        if (typeof verifyCode != 'string'){
+            throw `${func}: verifyCode must be a string.`;
+        }
+        if (typeof callback != 'function'){
+            throw `${func}: callback must be a function.`;
+        }
+    var queryDum = `
+        SELECT
+            ( change_email_limit > UNIX_TIMESTAMP() )   as isNotExpired ,
+            change_email_verify_code
+        FROM
+            users
+        WHERE
+            user_id = ?
+    `;
+    var valuesArr = [userID];
+    con.query(queryDum,valuesArr,function(err,result){
+        if (err) console.log(err);
+        if (result.length==0){
+            callback('nomatch');
+        } else if (result[0]['change_email_verify_code']!=verifyCode){
+            callback ('nomatch');
+        } else if (result[0]['isNotExpired']==0) {
+            callback('expired');
+        } else {
+            callback('match');
+        }
+    });
+}
+
+/**
+ * Copy unverified_email_address to email_address for given userID.
+ * Callback function has no parameters.
+ *
+ *@access   Public
+ *@param    Number      userID
+ *@param    Function    callback    
+ *@throws   Exception               If userID is not an integer.
+ *@throws   Exception               If callback is not a function.
+ */
+
+function verifyNewEmail(userID,callback){
+    /* Exceptions */
+        var func = arguments.callee.toString().match(/function ([^\(]+)/)[1];
+        if (typeof userID != 'number' || !Number.isInteger(userID)){
+            throw `${func}: userID must be integer.`;
+        }
+        if (typeof callback != 'function'){
+            throw `${func}: callback must be function.`;
+        }
+    var queryDum = `
+        UPDATE
+            users
+        SET
+            email_address = unverified_email_address
+        WHERE
+            user_id = ?
+    `;
+    var valuesArr = [userID];
+    con.query(queryDum,valuesArr,function(err,result){
+        if (err) console.log(err);
+        callback();
+    });
+}
+
+/**
  * "Cleans" a value for the GET method, meaning will remove anything that will
  * make it invalid for a url bar.  Intended to be used with randomized values.
  *
@@ -771,18 +937,20 @@ function cleanGetValue(inputStr){
 }
 
 module.exports = {
-    validateUserData            : validateUserData          ,
-    addUser                     : addUser                   ,
-    getUserRowFromEmailAddress  : getUserRowFromEmailAddress,
-    getUserRowFromId            : getUserRowFromId          ,
-    changeDefaultName           : changeDefaultName         ,
-    changeEmailAddress          : changeEmailAddress        ,
-    changeTimezone              : changeTimezone            ,
-    changePassword              : changePassword            ,
-    changeEmailVerification     : changeEmailVerification   ,
-    verifyUser                  : verifyUser                ,
-    checkEmailAndPassword       : checkEmailAndPassword     ,
-    checkIdAndPassword          : checkIdAndPassword        ,
-    resetPasswordResetInfo      : resetPasswordResetInfo    ,
-    resetPasswordConfirmCheck   : resetPasswordConfirmCheck
+    validateUserData                    : validateUserData                   ,
+    addUser                             : addUser                            ,
+    getUserRowFromEmailAddress          : getUserRowFromEmailAddress         ,
+    getUserRowFromId                    : getUserRowFromId                   ,
+    changeDefaultName                   : changeDefaultName                  ,
+    changeTimezone                      : changeTimezone                     ,
+    changePassword                      : changePassword                     ,
+    changeEmailVerification             : changeEmailVerification            ,
+    verifyUser                          : verifyUser                         ,
+    checkEmailAndPassword               : checkEmailAndPassword              ,
+    checkIdAndPassword                  : checkIdAndPassword                 ,
+    resetPasswordResetInfo              : resetPasswordResetInfo             ,
+    resetPasswordConfirmCheck           : resetPasswordConfirmCheck          ,
+    attemptAddUnverifiedEmailAddress    : attemptAddUnverifiedEmailAddress   ,
+    checkChangeEmailVerifyCode          : checkChangeEmailVerifyCode         ,
+    verifyNewEmail                      : verifyNewEmail
 };

@@ -101,13 +101,13 @@ function loggedIn(data){
  */
 
 function resetPasswordForm(){
-    var resetPasswordTitle         = gui.textItem('<h4>Reset Password</h3>','resetPasswordTitle');
-    var currentPassword            = gui.textInput('Current password:','currentPassword',true);
-    var newPassword                = gui.textInput('New password:','newPassword',true);
-    var confirmPassword            = gui.textInput('Confirm password:','confirmPassword',true);
-    var resetPasswordSubmitButton  = gui.buttonInput("Reset Password","resetPasswordSubmit");
+    var resetPasswordTitle  = gui.textItem('<h4>Reset Password</h3>','resetPasswordTitle');
+    var currentPassword     = gui.textInput('Current password:','currentPassword',true);
+    var newPassword         = gui.textInput('New password:','newPassword',true);
+    var confirmPassword     = gui.textInput('Confirm password:','confirmPassword',true);
+    var resetPasswordSubmit = gui.buttonInput("Reset Password","resetPasswordSubmit");
 
-    var returnArr = [resetPasswordTitle,currentPassword,newPassword,confirmPassword,resetPasswordSubmitButton];
+    var returnArr = [resetPasswordTitle,currentPassword,newPassword,confirmPassword,resetPasswordSubmit];
     
     return returnArr;
 }
@@ -120,14 +120,15 @@ function resetPasswordForm(){
  */
 
 function changeEmailAddressForm(emailAddress){
-    var changeEmailTitle        = gui.textItem('<h4>Change Email Address</h3>','changeEmailTitle');
-    var changeEmailMsg          = gui.textItem('<p>Requires email confirmation</p>','changeEmailMsg');
-    var currentEmailAddress     = gui.textItem(`<p>Current email address is <em>${emailAddress}</em>.`,'currentEmailText');
-    var newEmailAddress         = gui.textInput('New email address:','newEmailAddress',false);
-    var confirmEmailAddress     = gui.textInput('Confirm email address:','confirmEmailAddress',false);
-    var changeEmailSubmitButton = gui.buttonInput('Request email','changeEmailSubmitButton');
+    var changeEmailTitle    = gui.textItem('<h4>Change Email Address</h3>','changeEmailTitle');
+    var changeEmailMsg      = gui.textItem('<p>Requires email confirmation</p>','changeEmailMsg');
+    var currentEmailAddress = gui.textItem(`<p>Current email address is <em>${emailAddress}</em>.`,'currentEmailText');
+    var newEmailAddress     = gui.textInput('New email address:','newEmailAddress',false);
+    var confirmEmailAddress = gui.textInput('Confirm email address:','confirmEmailAddress',false);
+    var confirmPassword     = gui.textInput('Password confirmation:','confirmPasswordEmailChange',true);
+    var changeEmailSubmit   = gui.buttonInput('Request email','changeEmailSubmit');
 
-    var returnArr = [changeEmailTitle,changeEmailMsg,currentEmailAddress,newEmailAddress,confirmEmailAddress,changeEmailSubmitButton];
+    var returnArr = [changeEmailTitle,changeEmailMsg,currentEmailAddress,newEmailAddress,confirmEmailAddress,confirmPassword,changeEmailSubmit];
     return returnArr;
 }
 

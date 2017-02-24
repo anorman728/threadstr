@@ -111,7 +111,7 @@ CREATE TABLE
         verify_code
             CHAR(76)
             NOT NULL
-            COMMENT "Get value to verify account."
+            COMMENT "Get query value to verify account."
         ,
         timezone                
             VARCHAR(255)
@@ -137,6 +137,19 @@ CREATE TABLE
             BIGINT
             UNSIGNED
             COMMENT "Unix time of when reset password expires."
+        ,
+        unverified_email_address
+            VARCHAR(255)
+            COMMENT "Store new email address before it's verified."
+        ,
+        change_email_verify_code
+            CHAR(76)
+            COMMENT "Get query value to verify email change."
+        ,
+        change_email_limit
+            BIGINT
+            UNSIGNED
+            COMMENT "Unix time of when change email expires."
         ,
         PRIMARY KEY(user_id),
         UNIQUE INDEX default_display_name (default_display_name),

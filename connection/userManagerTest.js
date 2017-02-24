@@ -77,13 +77,13 @@ function testValidateUserData(attributesJSON,databaseFunctions){
     });
 }
 
-function testChangeDefaultName(databaseFunctions){
-    databaseFunctions.changeDefaultName(userID,testUsernameChange,function(){
-        console.log("\ndefault_display_name should be changed.");
-        displayTable();
-        testChangeEmailAddress(databaseFunctions);
-    });
-}
+//function testChangeDefaultName(databaseFunctions){
+//    databaseFunctions.changeDefaultName(userID,testUsernameChange,function(){
+//        console.log("\ndefault_display_name should be changed.");
+//        displayTable();
+//        testChangeEmailAddress(databaseFunctions);
+//    });
+//}
 
 function testChangeEmailAddress(databaseFunctions){
     databaseFunctions.changeEmailAddress(userID,testEmailAddressChange,function(){

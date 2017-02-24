@@ -1,9 +1,6 @@
 body {
     background-color: rgb(255,248,220);
-}
-
-p {
-    font-family:"Arial",sans-serif;
+    font-family: "Arial",sans-serif;
 }
 
 :root{

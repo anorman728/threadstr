@@ -360,3 +360,101 @@ function validateUser(emailAddress,defaultDisplayName,callback){
     });
 }
 
+/**
+ * Warn if email address is invalid.
+ *
+ *@param    String      inputEmail
+ *@param    String      updateField
+ *@throws   Exception                   If inputEmail is not a string.
+ *@throws   Exception                   If updateField is not a string.
+ */
+
+function warnEmailAddressInvalid(inputEmail,updateField){
+    /* Exceptions */
+        var fName = 'warnEmailAddressInvalid';
+        if (typeof inputEmail != 'string'){
+            throw fName+": inputEmail must be string.";
+        }
+        if (typeof updateField != 'string'){
+            throw fName+": updateField must be string.";
+        }
+    if (!(inputEmail=='' || checkEmailAddress(inputEmail))){
+        $('#'+updateField+'Message').html('<span style="color:red;">Email address is not valid.</span>');
+    }
+}
+
+/**
+ * Display warning if emailAddress is already taken.
+ *
+ *@param    String      inputEmail
+ *@param    String      updateField
+ *@throws   Exception                   If inputEmail is not a string.
+ *@throws   Exception                   If updateField is not a string.
+ */
+
+function warnEmailAddressTaken(inputEmail,updateField){
+    /* Exceptions */
+        var fName = "warnEmailAddressTaken";
+        if (typeof inputEmail != 'string') {
+            throw fName+': inputEmail must be string.';
+        }
+        if (typeof updateField != 'string') {
+            throw fName+': updateField must be string.';
+        }
+    if (!inputEmail==''){
+        validateUser(inputEmail,'dummyDisplayName',function(data){
+            var i,len;
+            for (i=0,len=data.length;i<len;i++){
+                if (data[i]=='email_address'){
+                    $('#'+updateField+'Message').html('<span style="color:red;">This email address is already taken.');
+                }
+            }
+        });
+    }
+}
+
+/**
+ * Display warning if defaultDisplayName is already taken.
+ *
+ *@param    String      inputDisplayName
+ *@param    String      updateField
+ *@throws   Exception                       If inputDisplayName is not a string.
+ *@throws   Exception                       If updateField is not a string.
+ */
+
+function warnDefaultDisplayNameTaken(inputDefaultDisplayName,updateField){
+    /* Exceptions */
+        var fName = 'warnDefaultDisplayNameTaken';
+        if (typeof inputDefaultDisplayName != 'string'){
+            throw fName+': inputDefaultDisplayName must be string.';
+        }
+        if (typeof updateField != 'string'){
+            throw fName+': updateField must be string.';
+        }
+    if (inputDefaultDisplayName!=''){
+        validateUser('fakemail@fakemail.fakemail',inputDefaultDisplayName,function(data){
+            var i,len;
+            for (i=0,len=data.length;i<len;i++){
+                if (data[i]=='default_display_name'){
+                    $('#'+updateField+'Message').html('<span style="color:red;">This default display name is already taken.</span>');
+                }
+            }
+        });
+    }
+}
+
+/**
+ * Display warning if two email addresses don't match.
+ *
+ *@param    String      email01
+ *@param    String      email02
+ *@param    String      updateField
+ *@throws   Exception                   If email01 or email02 is not a string.
+ *@throws   Exception                   If updateField is not a string.
+ */
+
+function warnEmailsDoNotMatch(email01,email02,updateField){
+    if (email01!=email02 && email01!='' && email02!=''){
+        $('#'+updateField+'Message').html('<span style="color:red;">Email addresses don\'t match.</span>');
+    }
+}
