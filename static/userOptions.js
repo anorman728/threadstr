@@ -53,6 +53,32 @@ $(document).ready(function(){
             });
         });
 
+    /* Change default display name. */
+
+        $('#changeDefaultDisplayNameSubmitButtonLabel').on('click',function(){
+            var updateField = '#changeDefaultDisplayNameSubmitButtonMessage';
+            var newDefaultDisplayName = $('#newDefaultDisplayNameValue').val();
+            $(updateField).html('Requesting change...');
+            changeDefaultDisplayName(newDefaultDisplayName,function(result){
+                if (result){
+                    $(updateField).html('Default Display Name successfully changed.');
+                } else {
+                    $(updateField).html('This Default Display Name is already taken.');
+                }
+            });
+        });
+
+    /* Change timezone. */
+        
+        $('#changeTimezoneButtonLabel').on('click',function(){
+            var newTimezone = $('#changeTimezoneValue').val();
+            var updateField = '#changeTimezoneButtonMessage';
+            $(updateField).html('Requesting change...');
+            changeTimezone(newTimezone,function(){
+                $(updateField).html('Timezone has been changed.');
+            });
+        });
+
 });
 
 /* Change password. */
@@ -169,7 +195,33 @@ $(document).ready(function(){
         $.ajax({
             'url'       : '/deleteAccountRequest',
             'type'      : 'POST',
-            'success'   :function(data){
+            'success'   : function(data){
+                callback(data);
+            },
+        });
+    }
+
+/* Change default display name. */
+
+    function changeDefaultDisplayName(newDefaultDisplayName,callback){
+        $.ajax({
+            'url'       : '/changeName',
+            'type'      : 'POST',
+            'data'      : {'newDefaultDisplayName': newDefaultDisplayName},
+            'success'   : function(data){
+                callback(data);
+            },
+        });
+    }
+
+/* Change timezone. */
+    
+    function changeTimezone(newTimezone,callback){
+        $.ajax({
+            'url' : '/changeTimezone',
+            'type' : 'POST',
+            'data' : {'newTimezone' : newTimezone},
+            'success' : function(data){
                 callback(data);
             },
         });

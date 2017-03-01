@@ -536,14 +536,15 @@ function checkIdAndPassword(userID,password,callback){
 }
 
 /**
- * Changes the default display name for the defined userID.  Callback function
- * has no parameters.
+ * Changes the default display name for the defined userID.
+ * Callback function has one boolean parameter: "true" if was able to
+ * successfully change default display name and "false" if the default display
+ * name already exists.
  *
  *@access   Public
  *@param    Number      userID          The user_id of the user.
  *@param    String      newDefaultName  Name that we want to change to.
- *@param    Function    callback        Callback function.  There are no 
- *                                      parameters.                      
+ *@param    Function    callback
  *@throws   Exception                   If userID is not an integer.
  *@throws   Exception                   If newDefaultName is not a nonempty 
  *                                      string.                             
@@ -564,7 +565,7 @@ function changeDefaultName(userID,newDefaultName,callback){
         }
     validateUserData('dummyaddress@dum.com',newDefaultName,function(returnArr){
         if (arrayTools.arrayIncludes(returnArr,'default_display_name')){
-            throw "newDefaultName already exists.";
+            callback(false);
         } else {
             var queryDum = `
                 UPDATE
@@ -577,7 +578,7 @@ function changeDefaultName(userID,newDefaultName,callback){
             var columnValues = [newDefaultName,userID];
             queryXSS(queryDum,columnValues,function(err,result){
                 if (err) {console.log(err);}
-                callback();
+                callback(true);
             });
         }
     });

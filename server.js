@@ -534,6 +534,47 @@ getPW.getDatabasePassword(function(password){
             }
         });
 
+        /**
+         * Change default display name for user that's currently logged in.
+         * Sends boolean of "true" if was able to successfully change it, and
+         * false if wasn't.
+         *
+         *@method   POST
+         *@body     String      newDefaultDisplayName
+         *@send     Boolean
+         */
+
+        app.post('/changeName',function(req,res){
+            if (typeof req.body.newDefaultDisplayName == 'string'){
+                var db = require(root+'/connection/userManager');
+                db.changeDefaultName(req.session.userID,req.body.newDefaultDisplayName,function(result){
+                    res.send(result);
+                });
+            } else {
+                res.send(false);
+            }
+        });
+
+        /**
+         * Change timezone.
+         * Sends boolean of "true", unless newTimezone is not defined.
+         *
+         *@method   POST
+         *@body     String      newTimezone
+         *@send     Boolean
+         */
+
+        app.post('/changeTimezone',function(req,res){
+            if (typeof req.body.newTimezone == 'string'){
+                var db = require(root+'/connection/userManager');
+                db.changeTimezone(req.session.userID,req.body.newTimezone,function(){
+                    res.send(true);
+                });
+            } else {
+                res.send(false);
+            }
+        });
+
     /* Start server. */
 
         app.listen(8080,function(){

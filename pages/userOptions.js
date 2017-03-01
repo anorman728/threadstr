@@ -189,7 +189,7 @@ function changeTimezoneForm(timezone){
         if (typeof timezone!='string'){
             throw `${func}: timezone must be string.`;
         }
-    var changeTimezoneTitle            = gui.textItem('<h4>Change timezone</h3>','changeTimezoneTItle');
+    var changeTimezoneTitle            = gui.textItem('<h4>Change timezone</h3>','changeTimezoneTitle');
     var timezoneDroplist               = gui.timezoneInput('Change timezone:','changeTimezone',timezone);
     var changeTimezoneSubmitButton     = gui.buttonInput('Change Timezone','changeTimezoneButton');
 
