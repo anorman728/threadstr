@@ -13,6 +13,7 @@ $(document).ready(function(){
 
 
 function confirmDelete(userID,verifyCode,password,updateField){
+    $(updateField).html('Sending delete request...');
     confirmDeleteAjax(userID,verifyCode,password,function(data){
         switch (data){
             case 'success':
