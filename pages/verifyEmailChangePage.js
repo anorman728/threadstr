@@ -70,13 +70,9 @@ function matchHtml(){
  */
 
 function noMatchHtml(){
-    var returnStr = `<p class="formContainer">Unable to verify.  Double-check that you clicked the link from the verification email.</p>`;
-    // Small amount of code duplication here-- This string also appears verbatim in server.js.  May want to fix that in the future.
+    var common = require(__dirname+'/common');
+    var returnStr = common.messagesObj['unableToVerify'];
     return returnStr;
-}
-
-module.exports = {
-    confirmAndGetPage   : confirmAndGetPage
 }
 
 /**
@@ -87,6 +83,12 @@ module.exports = {
  */
 
 function expiredHtml(){
-    var returnStr = `<p class="formContainer">Email change request has expired.  If you still want to change your email address, you will need to make another request through the options page.</p>`;
+    var common = require(__dirname+'/common');
+    var returnStr = common.messagesObj['expired'];
     return returnStr;
 }
+
+module.exports = {
+    confirmAndGetPage   : confirmAndGetPage
+}
+

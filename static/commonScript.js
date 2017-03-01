@@ -1,46 +1,10 @@
 // Script to run when every page is loaded.
 
+// TODO: Refactor to separate model from controller a little more.
+
 $(document).ready(function(){
 
     updateHeader();
-
-    /**
-     * Determine if user is logged in.
-     *
-     *@param    Object      callback    Callback function with one parameter, true
-     *                                  or false.
-     */
-
-    function isLoggedIn(callback){
-        $.ajax({
-            'url'       : 'isLoggedIn',
-            'type'      : 'POST',
-            'success'   : function(data){
-                callback(data);
-            }
-        });
-    }
-
-    /**
-     * Update which header buttons are hidden.
-     */
-
-    function updateHeader(){
-        $('#loginDiv').parent().css('display','none');
-        isLoggedIn(function(tf){
-            if (tf){
-                $("#login").hide();
-                $("#createAccount").hide();
-                $("#logout").show();
-                $("#options").show();
-            } else {
-                $("#login").show();
-                $("#createAccount").show();
-                $("#logout").hide();
-                $("#options").hide();
-            }
-        });
-    }
 
     /** Home page link */
     $("#logoDiv").on('click',function(){
@@ -149,16 +113,6 @@ $(document).ready(function(){
     $('#logout').on('click',function(){
         logout();
     });
-
-    function logout(){
-        $.ajax({
-            'url'      : 'logout',
-            'type'     : 'POST',
-            'success'  : function(data){
-                updateHeader();
-            }
-        });
-    }
 
     /** Reset password */
 
@@ -458,3 +412,56 @@ function warnEmailsDoNotMatch(email01,email02,updateField){
         $('#'+updateField+'Message').html('<span style="color:red;">Email addresses don\'t match.</span>');
     }
 }
+
+/**
+ * Log out the user.
+ */
+
+function logout(){
+    $.ajax({
+        'url'      : 'logout',
+        'type'     : 'POST',
+        'success'  : function(data){
+            updateHeader();
+        }
+    });
+}
+
+/**
+ * Update which header buttons are hidden.
+ */
+
+function updateHeader(){
+    $('#loginDiv').parent().css('display','none');
+    isLoggedIn(function(tf){
+        if (tf){
+            $("#login").hide();
+            $("#createAccount").hide();
+            $("#logout").show();
+            $("#options").show();
+        } else {
+            $("#login").show();
+            $("#createAccount").show();
+            $("#logout").hide();
+            $("#options").hide();
+        }
+    });
+}
+
+/**
+ * Determine if user is logged in.
+ *
+ *@param    Object      callback    Callback function with one parameter, true
+ *                                  or false.
+ */
+
+function isLoggedIn(callback){
+    $.ajax({
+        'url'       : 'isLoggedIn',
+        'type'      : 'POST',
+        'success'   : function(data){
+            callback(data);
+        }
+    });
+}
+

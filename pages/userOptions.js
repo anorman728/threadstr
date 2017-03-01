@@ -76,8 +76,8 @@ function loggedIn(data){
     var optionsTitle = gui.textItem("<h2>User options</h2>",'userOptionsTitle');
     var formItems = [optionsTitle];
 
-    // Reset password.
-        formItems = formItems.concat(resetPasswordForm());
+    // Change password.
+        formItems = formItems.concat(changePasswordForm());
     // Change email address.
         formItems = formItems.concat(changeEmailAddressForm(data['email_address']));
     // Delete account.
@@ -94,26 +94,26 @@ function loggedIn(data){
 }
 
 /**
- * Get array for portion of form for resetting password.
+ * Get array for portion of form for changing password.
  *
  *@access   Private
  *@return   Object
  */
 
-function resetPasswordForm(){
-    var resetPasswordTitle  = gui.textItem('<h4>Reset Password</h3>','resetPasswordTitle');
+function changePasswordForm(){
+    var changePasswordTitle  = gui.textItem('<h4>Change Password</h3>','changePasswordTitle');
     var currentPassword     = gui.textInput('Current password:','currentPassword',true);
     var newPassword         = gui.textInput('New password:','newPassword',true);
     var confirmPassword     = gui.textInput('Confirm password:','confirmPassword',true);
-    var resetPasswordSubmit = gui.buttonInput("Reset Password","resetPasswordSubmit");
+    var changePasswordSubmit = gui.buttonInput("Change Password","changePasswordSubmit");
 
-    var returnArr = [resetPasswordTitle,currentPassword,newPassword,confirmPassword,resetPasswordSubmit];
+    var returnArr = [changePasswordTitle,currentPassword,newPassword,confirmPassword,changePasswordSubmit];
     
     return returnArr;
 }
 
 /**
- * Get array for resetting email address.
+ * Get array for change email address.
  *
  *@access   Private
  *@return   Object

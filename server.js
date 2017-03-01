@@ -429,18 +429,108 @@ getPW.getDatabasePassword(function(password){
 
         app.get('/changeEmailAddressVerify',function(req,res){
             var pageTitle = "Threadstr: Verify Email Change";
-            var verifyEmailChangePage = require(root+'/pages/verifyEmailChangePage');
             common.setHtmlHeader(pageTitle,false,false);
             common.setPageHeader(pageTitle);
             if (typeof req.query.userID != 'string' || typeof req.query.verifyCode != 'string' || isNaN(req.query.userID)){
-                common.setMainDiv(`<p class="formContainer">Unable to verify.  Double-check that you clicked the link from the verification email.</p>`);
-                // Small amount of code duplication here-- This string also appears verbatim in pages/verifyEmailChangePage.js.
+                common.setMainDiv(common.messagesObj['unableToVerify']);
                 res.send(common.commonHTML());
             } else {
+                var verifyEmailChangePage = require(root+'/pages/verifyEmailChangePage');
                 verifyEmailChangePage.confirmAndGetPage(parseInt(req.query.userID),req.query.verifyCode,function(outputHtml){
                     common.setMainDiv(outputHtml);
                     res.send(common.commonHTML());
                 });
+            }
+        });
+
+    /* Account management */
+
+        /**
+         * Send email to verify deleting account.
+         *
+         *@method   POST
+         *@sends    Boolean
+         */
+
+        app.post('/deleteAccountRequest',function(req,res){
+            var db = require(root+'/connection/userManager');
+            var nodemailer = require(root+'/nodemailer/nodemailer');
+            var userID = req.session.userID;
+            var fullUrl = req.protocol + '://' + req.get('host');
+            db.createDeleteVerificationCode(userID,expiryTime,function(emailAddress,verifyCode){
+                nodemailer.deleteAccountEmail(emailAddress,userID,fullUrl,verifyCode);
+                res.send(true);
+            });
+        });
+
+        /**
+         * Delete account confirmation page.
+         *
+         *@method   GET
+         *@query    String      userID
+         *@query    String      verifyCode
+         *@sends    HTML
+         */
+
+        app.get('/deleteEmailVerify',function(req,res){
+            var pageTitle = "Threadstr: Delete Account Confirmation";
+            var scripts = [{isAsync:false,src:'/deleteAccountPage.js'}];
+            common.setHtmlHeader(pageTitle,false,scripts);
+            common.setPageHeader(pageTitle);
+            if (typeof req.query.userID != 'string' || typeof req.query.verifyCode != 'string' || isNaN(req.query.userID)){
+                common.setMainDiv(common.messagesObj['unableToVerify']);
+                res.send(common.commonHTML());
+            } else {
+                var deleteAccountPage = require(root+'/pages/deleteAccountPage');
+                deleteAccountPage.confirmAndGetPage(parseInt(req.query.userID),req.query.verifyCode,function(outputHtml){
+                    common.setMainDiv(outputHtml);
+                    res.send(common.commonHTML());
+                });
+            }
+        });
+
+        /**
+         * Delete account iff password and verification code match and request
+         * has not expired.
+         * Sends string of "success", "badVerifyCode", "badPassword", or
+         * "expired", accordingly.
+         * Sends "bad data" string if post data is bad.
+         *
+         *@method   POST
+         *@body     String      userID
+         *@body     String      verifyCode
+         *@body     String      password
+         *@sends    String
+         */
+
+        app.post('/deleteAccountAction',function(req,res){
+            if (typeof req.body.userID == 'string' && typeof req.body.verifyCode == 'string' && typeof req.body.password == 'string'){
+                var userID = parseInt(req.body.userID);
+                var verifyCode = req.body.verifyCode;
+                var password = req.body.password;
+                var db = require(root+'/connection/userManager');
+                db.checkIdAndPassword(userID,password,function(result){
+                    if (result){
+                        db.checkDeleteAccountVerifyCode(userID,verifyCode,function(verifyResult){
+                            switch (verifyResult){
+                                case 'match':
+                                    db.deleteUser(userID);
+                                    res.send('success');
+                                    break;
+                                case 'nomatch':
+                                    res.send('badVerifyCode');
+                                    break;
+                                case 'expired':
+                                    res.send('expired');
+                                    break;
+                            }
+                        });
+                    } else {
+                        res.send('badPassword');
+                    }
+                });
+            } else {
+                res.send('bad data');
             }
         });
 

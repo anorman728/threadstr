@@ -29,7 +29,6 @@ function validateUserData(emailAddress,defaultDisplayName,callback){
             throw "emailAddress must be string.";
         }
         if (!(/\S+@\S+\.\S+/.test(emailAddress))){
-            console.log(emailAddress);//dmz1
             throw "Not a valid email address.";
         }
         if (typeof defaultDisplayName != "string" || defaultDisplayName ==''){
@@ -933,7 +932,144 @@ function verifyNewEmail(userID,callback){
 function cleanGetValue(inputStr){
     var returnStr = encodeURIComponent(inputStr);
     returnStr = returnStr.replace(/%(.*?){1,3}/g,"a");
+    returnStr = returnStr.replace('.','b');
     return returnStr;
+}
+
+
+/**
+ * Create a verification code to delete an account.
+ * Callback function has two parameters-- email_address and
+ * delete_verification_code.
+ *
+ *@access   Public
+ *@param    Number      userID
+ *@param    Number      secondsOffset   Number of seconds before verification
+ *                                      code expires.
+ *@param    Function    callback
+ *@throws   Exception                   If userID is not an integer.
+ *@throws   Exception                   If secondsOffset is not an integer.
+ *@throws   Exception                   If callback is not a function.
+ */
+
+function createDeleteVerificationCode(userID,secondsOffset,callback){
+    /* Exceptions */
+        var func = arguments.callee.toString().match(/function ([^\(]+)/)[1];
+        if (typeof userID != 'number' || !Number.isInteger(userID)){
+            throw `${func}: userID must be integer.`;
+        }
+        if (typeof secondsOffset != 'number' || !Number.isInteger(secondsOffset)){
+            throw `${func}: secondsOffset must be integer.`;
+        }
+        if (typeof callback != 'function'){
+            throw `${func}: callback must be function.`;
+        }
+    var bcrypt = require('bcrypt-nodejs');
+    var verifyCode = cleanGetValue(bcrypt.genSaltSync());
+    var queryDum = `
+        UPDATE
+            users
+        SET
+            delete_verification_code   = ?,
+            delete_verification_limit  = UNIX_TIMESTAMP() + ${secondsOffset}
+        WHERE
+            user_id            = ? AND
+            email_verified     = 1
+    `;
+    var columnVals = [verifyCode,userID];
+    con.query(queryDum,columnVals,function(err,results){
+        if (err) console.log(err);
+        queryDum = `
+            SELECT
+                email_address
+            FROM
+                users
+            WHERE
+                user_id = ?
+        `;
+        columnVals = [userID];
+        con.query(queryDum,columnVals,function(err,results){
+            if (err) console.log(err);
+            callback(results[0]['email_address'],verifyCode);
+        });
+    });
+}
+
+/**
+ * Check if verifyCode matches the delete_verification_code for the given userID
+ * and that time has not expired.
+ * Callback function has one string parameter: "match" if match exists,
+ * "nomatch" if row is not found, and "expired" if row is found but the time has
+ * expired.
+ * 
+ *
+ *@access   Public
+ *@param    Number      userID
+ *@param    String      verifyCode
+ *@param    Function    callback
+ *@throws   Exception               If userID is not an integer.
+ *@throws   Exception               If verifyCode is not a string.
+ *@throws   Exception               If callback is not a function.
+ */
+
+function checkDeleteAccountVerifyCode(userID,verifyCode,callback){
+    /* Exceptions */
+        var func = arguments.callee.toString().match(/function ([^\(]+)/)[1];
+        if (typeof userID != 'number' || !Number.isInteger(userID)){
+            throw `${func}: userID must be an integer.`;
+        }
+        if (typeof verifyCode != 'string'){
+            throw `${func}: verifyCode must be a string.`;
+        }
+        if (typeof callback != 'function'){
+            throw `${func}: callback must be a function.`;
+        }
+    var queryDum = `
+        SELECT
+            ( delete_verification_limit > UNIX_TIMESTAMP() ) as isNotExpired,
+            delete_verification_code
+        FROM
+            users
+        WHERE
+            user_id = ?
+    `;
+    var valuesArr = [userID];
+    con.query(queryDum,valuesArr,function(err,result){
+        if (err) console.log(err);
+        if (result.length==0){
+            callback('nomatch');
+        } else if (result[0]['delete_verification_code'] != verifyCode){
+            callback('nomatch');
+        } else if (result[0]['isNotExpired']==0){
+            callback('expired');
+        } else {
+            callback('match');
+        }
+    });
+}
+
+/**
+ * Delete the user from the database.
+ *
+ *@access   Public
+ *@param    Number      userID
+ *@throws   Exception           If userID is not an integer.
+ */
+
+function deleteUser(userID){
+    /* Exceptions */
+        var func = arguments.callee.toString().match(/function ([^\(]+)/)[1];
+        if (typeof userID != 'number' || !Number.isInteger(userID)){
+            throw `${func}: userID must be an integer.`;
+        }
+    var queryDum = `
+        DELETE FROM
+            users
+        WHERE
+            user_id = ?
+    `;
+    var columnVals = [userID];
+    con.query(queryDum,columnVals);
 }
 
 module.exports = {
@@ -952,5 +1088,8 @@ module.exports = {
     resetPasswordConfirmCheck           : resetPasswordConfirmCheck          ,
     attemptAddUnverifiedEmailAddress    : attemptAddUnverifiedEmailAddress   ,
     checkChangeEmailVerifyCode          : checkChangeEmailVerifyCode         ,
-    verifyNewEmail                      : verifyNewEmail
+    verifyNewEmail                      : verifyNewEmail                     ,
+    createDeleteVerificationCode        : createDeleteVerificationCode       ,
+    checkDeleteAccountVerifyCode        : checkDeleteAccountVerifyCode       ,
+    deleteUser                          : deleteUser
 };

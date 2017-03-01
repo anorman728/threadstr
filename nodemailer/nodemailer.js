@@ -2,10 +2,8 @@
  * Manage emails.
  */
 
-// Todo: Hide password.
-
 var nodemailer = require('nodemailer');
-var signature = `<p>Please note that the <em>only</em> times Threadstr will request that you click on a link in an email is when verifying an account, resetting a password, or changing an email address.  If you did not expect the email, then you should not click on any links, as it could be a scammer trying to steal your personal data.<br>
+var signature = `<p>Please note that the <em>only</em> times Threadstr will request that you click on a link in an email is when verifying an account, resetting a password, changing an email address, or deleting an account, and you should have expected to receive an email beforehand in all of these cases.  If you did not expect an email from Threadstr, then you should not click on any links, as it could be a scammer trying to steal your personal data.<br>
 Be safe while browsing, and <em>never</em> click on a link from an email if you can avoid it.  For any website (not just Threadstr), it's better to go to the homepage and log in from there instead of clicking a link in an email.</p>
 `;
 
@@ -146,10 +144,50 @@ function verifyEmailAddressChangeEmail(recipient,userID,url,verifyCode){
     sendMail(recipient,"New email address for Threadstr account",message);
 }
 
+/**
+ * Send email to verify deleting account.
+ *
+ *@access   Public
+ *@param    String      recipient
+ *@param    Number      userID
+ *@param    String      url
+ *@param    String      verifyCode
+ *@throws   Exception                   If recipient is not a string.
+ *@throws   Exception                   If userID is not a number.
+ *@throws   Exception                   If url is not a string.
+ *@throws   Exception                   If verifyCode is not a string.
+ */
+
+function deleteAccountEmail(recipient,userID,url,verifyCode){
+    /* Exceptions */
+        var func = arguments.callee.toString().match(/function ([^\(]+)/)[1];
+        if (typeof recipient != 'string'){
+            throw `${func}: recipient must be string.`;
+        }
+        if (typeof userID != 'number' || !Number.isInteger(userID)){
+            throw `${func}: userID must be integer.`;
+        }
+        if (typeof url != 'string'){
+            throw `${func}: url must be string.`;
+        }
+        if (typeof verifyCode != 'string'){
+            throw `${func}: verifyCode.`;
+        }
+    var urlcode = `${url}/deleteEmailVerify?userID=${userID}&verifyCode=${verifyCode}`;
+    var message = `
+        <p>Threadstr has received a request to delete the account associated with this email address.  <em>If you did not make this request, then your account has probably been compromised and you should change your password immediately</em>.</p>
+        <p>Please click the link below (or copy and paste into browser's url bar) to complete the request.</p>
+        <p><a href="${urlcode}">${urlcode}</a></p>
+    `;
+    message += signature;
+    sendMail(recipient,"Delete Threadstr account confirmation",message);
+}
+
 
 module.exports = {
     sendMail                       : sendMail                       ,
     sendVerificationEmail          : sendVerificationEmail          ,
     resetPasswordEmail             : resetPasswordEmail             ,
-    verifyEmailAddressChangeEmail  : verifyEmailAddressChangeEmail
+    verifyEmailAddressChangeEmail  : verifyEmailAddressChangeEmail  ,
+    deleteAccountEmail             : deleteAccountEmail
 };

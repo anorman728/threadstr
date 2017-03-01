@@ -15,7 +15,7 @@ $(document).ready(function(){
     });
 
     $('#createAccountSubmitLabel').on('click',function(){
-        $('#createAccountSubmitMessage').html(errorMsg);
+        $('#createAccountSubmitMessage').html('');
         var errorMsg = "<p style=\"color:red;\">There are problems noted above or blank fields.  They will need to be corrected before submitting.</p>";
         var tf = ($('#emailAddressValue').val()!='');
         if (!createAccountPasswordsMatch()) tf=false;

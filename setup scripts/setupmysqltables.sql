@@ -151,6 +151,15 @@ CREATE TABLE
             UNSIGNED
             COMMENT "Unix time of when change email expires."
         ,
+        delete_verification_code
+            CHAR(76)
+            COMMENT "Get query value to verify deleting email address."
+        ,
+        delete_verification_limit
+            BIGINT
+            UNSIGNED
+            COMMENT "Unix time when delete account request expires."
+        ,
         PRIMARY KEY(user_id),
         UNIQUE INDEX default_display_name (default_display_name),
         UNIQUE INDEX email_address (email_address)

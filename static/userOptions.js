@@ -42,6 +42,17 @@ $(document).ready(function(){
             });
         });
 
+    /* Delete account. */
+
+        $('#deleteAccountSubmitButtonLabel').on('click',function(){
+            var updateField = '#deleteAccountSubmitButtonMessage';
+            deleteAccount(function(tf){
+                if (tf) {
+                    $(updateField).html('An email has been sent to you to verify that you want to delete this account.');
+                }
+            });
+        });
+
 });
 
 /* Change password. */
@@ -152,3 +163,14 @@ $(document).ready(function(){
         });
     }
 
+/* Delete account. */
+
+    function deleteAccount(callback){
+        $.ajax({
+            'url'       : '/deleteAccountRequest',
+            'type'      : 'POST',
+            'success'   :function(data){
+                callback(data);
+            },
+        });
+    }

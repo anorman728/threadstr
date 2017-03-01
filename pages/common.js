@@ -162,10 +162,16 @@ function commonHTML(){
     return htmlHeader + pageHeader + systemNotifications + googleAdSense() + mainDiv;
 }
 
+var messagesObj = {
+    'unableToVerify'    : `<p class="formContainer">Unable to verify.  Double-check that you have followed the link from the email that was sent to your email account.</p>`,
+    'expired'           : `<p class="formContainer">Request has expired.  You will need to make another request to accomplish this action.</p>`,
+}
+
 module.exports = {
-    setHtmlHeader          :setHtmlHeader          ,
-    setPageHeader          :setPageHeader          ,
-    setSystemNotifications :setSystemNotifications ,
-    setMainDiv             :setMainDiv             ,
-    commonHTML             : commonHTML
+    setHtmlHeader           : setHtmlHeader         ,
+    setPageHeader           : setPageHeader         ,
+    setSystemNotifications  : setSystemNotifications,
+    setMainDiv              : setMainDiv            ,
+    commonHTML              : commonHTML            ,
+    messagesObj             : messagesObj
 };
