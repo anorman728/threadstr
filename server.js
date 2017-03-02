@@ -42,13 +42,17 @@ getPW.getDatabasePassword(function(password){
         con = connection.con;
         queryXSS = connection.queryXSS;
 
+    /* Create express app. */
         var express = require('express');
-        var bodyParser = require('body-parser');
         var app = express();
 
     /* Common header */
         var common = require(root+'/pages/common');
         common.setSystemNotifications();
+
+    /* Helmet middleware. */
+        var helmet = require('helmet');
+        app.use(helmet());
 
     /* Static files */
         app.use('/',express.static('static'));
@@ -72,6 +76,8 @@ getPW.getDatabasePassword(function(password){
         }));
 
     /* bodyParser.urlencoded (for POST values) */
+
+        var bodyParser = require('body-parser');
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({
             extended: true
