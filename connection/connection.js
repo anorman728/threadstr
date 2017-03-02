@@ -10,11 +10,6 @@ var connection  = mysql.createConnection({
     database: "threadstr"       ,
 });
 
-/* Query the database every ten minutes to keep the connection from closing. */
-setInterval(function () {
-    connection.query('SELECT 1');
-}, 600000);
-
 /**
  * Version of query that converts all parameterized values to html values, to
  * prevent XSS attacks.  Can't be too careful.
