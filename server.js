@@ -1,7 +1,6 @@
 /*
    Note that I've started making up some docblock standards for Express.js to
    make documentation easier.
-   At the moment, I haven't applied it to all of them.
   
     The kinds of details in this documentation:
         @method
@@ -159,6 +158,7 @@ getPW.getDatabasePassword(function(password){
          * Log in.  Sets the user's cookie.  Sends string of "success" if
          * successful, "no match" if email and password do not match, and "not
          * verified" if the user has not been verified.
+         * Sends "false" if data is invalid.
          *
          *@method   POST
          *@body     String      emailAddress    Email address of user logging in.
@@ -167,13 +167,17 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/login',function(req,res){
-            var db = require(root+"/connection/userManager");
-            db.checkEmailAndPassword(req.body.emailAddress,req.body.password,function(results,userID){
-                if (results=='success'){
-                    req.session.userID = userID;
-                }
-                res.send(results);
-            });
+            if (typeof req.body.emailAddress != 'undefined' && typeof req.body.password != 'undefined'){
+                var db = require(root+"/connection/userManager");
+                db.checkEmailAndPassword(req.body.emailAddress,req.body.password,function(results,userID){
+                    if (results=='success'){
+                        req.session.userID = userID;
+                    }
+                    res.send(results);
+                });
+            } else {
+                res.send(false);
+            }
         });
 
         /**
@@ -220,6 +224,7 @@ getPW.getDatabasePassword(function(password){
          * Check email and default display name ajax.
          * This is just to see if they already exist (i.e., when changing or
          * creating a new user).
+         * Sends "false" if invalid post data.
          *
          *@method   POST
          *@body     String      emailAddress
@@ -229,14 +234,19 @@ getPW.getDatabasePassword(function(password){
 
         app.post('/validateUser',function(req,res){
             var db = require(root+'/connection/userManager');
-            db.validateUserData(req.body.emailAddress,req.body.defaultDisplayName,function(output){
-                res.send(output);
-            });
+            if (typeof req.body.emailAddress != 'undefined' && typeof req.body.defaultDisplayName != 'undefined'){
+                db.validateUserData(req.body.emailAddress,req.body.defaultDisplayName,function(output){
+                    res.send(output);
+                });
+            } else {
+                res.send(false);
+            }
         });
 
         /**
          * Submit data to create account.  Will send an email to the new user.
          * Response sent back will simply be "Success."
+         * Will send "false" if data is invalid.
          *
          *@method   POST
          *@body     Object      data        JSON object with data for new user.
@@ -245,19 +255,24 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/createAccountSubmit',function(req,res){
-            var db = require(root+'/connection/userManager');
-            db.addUser(req.body.data,req.body.password,function(userID,verifyCode){
-                res.send("Success.");
-                var sendMail = require(root+'/nodemailer/nodemailer');
-                var fullUrl = req.protocol + '://' + req.get('host');
-                sendMail.sendVerificationEmail(req.body.data.email_address,verifyCode,userID,fullUrl);
-            });
+            if (typeof req.body.data != 'undefined' && typeof req.body.password != 'undefined'){
+                var db = require(root+'/connection/userManager');
+                db.addUser(req.body.data,req.body.password,function(userID,verifyCode){
+                    res.send("Success.");
+                    var sendMail = require(root+'/nodemailer/nodemailer');
+                    var fullUrl = req.protocol + '://' + req.get('host');
+                    sendMail.sendVerificationEmail(req.body.data.email_address,verifyCode,userID,fullUrl);
+                });
+            } else {
+                res.send(false);
+            }
         });
 
         /**
          * Request new email verification.
          * Will send a new email to the user.
-         * The send value is true if the emailaddress is found and false if it isn't.
+         * The send value is true if the emailaddress is found and false if it
+         * isn't.
          *
          *@method   POST
          *@body     String      emailAddress
@@ -265,17 +280,21 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/requestNewEmailVerification',function(req,res){
-            var db = require(root+'/connection/userManager');
-            db.getUserRowFromEmailAddress(req.body.emailAddress,function(data){
-                if (data===false){
-                    res.send(false);
-                } else {
-                    res.send(true);
-                    var sendMail = require(root+'/nodemailer/nodemailer');
-                    var fullUrl = req.protocol + '://' + req.get('host');
-                    sendMail.sendVerificationEmail(req.body.emailAddress,data['verify_code'],data['user_id'],fullUrl);
-                }
-            });
+            if (typeof req.body.emailAddress != 'undefined'){
+                var db = require(root+'/connection/userManager');
+                db.getUserRowFromEmailAddress(req.body.emailAddress,function(data){
+                    if (data===false){
+                        res.send(false);
+                    } else {
+                        res.send(true);
+                        var sendMail = require(root+'/nodemailer/nodemailer');
+                        var fullUrl = req.protocol + '://' + req.get('host');
+                        sendMail.sendVerificationEmail(req.body.emailAddress,data['verify_code'],data['user_id'],fullUrl);
+                    }
+                });
+            } else {
+                res.send(false);
+            }
         });
 
     /* Password management */
@@ -284,7 +303,8 @@ getPW.getDatabasePassword(function(password){
          * Send email to reset password.  Meant to be used as Ajax call.
          *
          *@method   POST
-         *@body     String      emailAddress    Email address of account to reset.
+         *@body     String      emailAddress    Email address of account to
+         *                                      reset.
          *@sends    String                      "Success" if email address
          *                                      exists in database and will send
          *                                      an email to the user.
@@ -293,18 +313,22 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/resetPassword',function(req,res){
-            var db = require(root+"/connection/userManager");
-            // For the moment, going to simply reuse the getUserRowFromEmailAddress function, but, in the future, might be faster to create a function specifically for this.
-            db.getUserRowFromEmailAddress(req.body.emailAddress,function(data){
-                if (data!==false){
-                    res.send("success");
-                    var sendMail = require(root+'/nodemailer/nodemailer');
-                    var fullUrl = req.protocol + '://'+ req.get('host');
-                    sendMail.resetPasswordEmail(req.body.emailAddress,data.user_id,fullUrl,expiryTime);
-                } else {
-                    res.send("no email");
-                }
-            });
+            if (typeof req.body.emailAddress != 'undefined'){
+                var db = require(root+"/connection/userManager");
+                // For the moment, going to simply reuse the getUserRowFromEmailAddress function, but, in the future, might be faster to create a function specifically for this.
+                db.getUserRowFromEmailAddress(req.body.emailAddress,function(data){
+                    if (data!==false){
+                        res.send("success");
+                        var sendMail = require(root+'/nodemailer/nodemailer');
+                        var fullUrl = req.protocol + '://'+ req.get('host');
+                        sendMail.resetPasswordEmail(req.body.emailAddress,data.user_id,fullUrl,expiryTime);
+                    } else {
+                        res.send("no email");
+                    }
+                });
+            } else {
+                res.send(false);
+            }
         });
 
         /**
@@ -324,16 +348,20 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.get('/resetPasswordPage',function(req,res){
-            var pageTitle = "Threadstr: Reset Password";
-            var scripts = [{isAsync:false,src:'/resetPasswordPage.js'}]
-            common.setHtmlHeader(pageTitle,false,scripts);
-            common.setPageHeader(pageTitle);
-            var resetPasswordPage = require(root+'/pages/resetPasswordPage');
-            resetPasswordPage.createResetPasswordPage(req.query.userID,req.query.resetPasswordConfirm,function(html){
-                common.setMainDiv(html);
-                var output = common.commonHTML();
-                res.send(output);
-            });
+            if (typeof req.query.userID != 'undefined' && typeof req.query.resetPasswordConfirm != 'undefined'){
+                var pageTitle = "Threadstr: Reset Password";
+                var scripts = [{isAsync:false,src:'/resetPasswordPage.js'}]
+                common.setHtmlHeader(pageTitle,false,scripts);
+                common.setPageHeader(pageTitle);
+                var resetPasswordPage = require(root+'/pages/resetPasswordPage');
+                resetPasswordPage.createResetPasswordPage(req.query.userID,req.query.resetPasswordConfirm,function(html){
+                    common.setMainDiv(html);
+                    var output = common.commonHTML();
+                    res.send(output);
+                });
+            } else {
+                res.send(false);
+            }
         });
 
         /**
@@ -350,19 +378,23 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/resetPasswordAction',function(req,res){
-            var db = require(root+'/connection/userManager');
-            var userId = parseInt(req.body.userId);
-            db.resetPasswordConfirmCheck(userId,req.body.resetPasswordConfirm,function(data){
-                switch (data){
-                    case "success":
-                        db.changePassword(userId,req.body.newPassword,function(){
+            if (typeof req.body.newPassword != 'undefined' && typeof req.body.userId != 'undefined' && typeof req.body.resetPasswordConfirm != 'undefined'){
+                var db = require(root+'/connection/userManager');
+                var userId = parseInt(req.body.userId);
+                db.resetPasswordConfirmCheck(userId,req.body.resetPasswordConfirm,function(data){
+                    switch (data){
+                        case "success":
+                            db.changePassword(userId,req.body.newPassword,function(){
+                                res.send(data);
+                            });
+                            break;
+                        default:
                             res.send(data);
-                        });
-                        break;
-                    default:
-                        res.send(data);
-                }
-            });
+                    }
+                });
+            } else {
+                res.send(false);
+            }
         });
 
         /**
@@ -379,17 +411,21 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/resetPasswordLoggedInAction',function(req,res){
-            var db = require(root+'/connection/userManager');
-            var userID = req.session.userID;
-            db.checkIdAndPassword(userID,req.body.currentPassword,function(result){
-                if (result==true){
-                    db.changePassword(userID,req.body.newPassword,function(){
-                        res.send(true);
-                    });
-                } else {
-                    res.send(false);
-                }
-            });
+            if (typeof req.body.currentPassword != 'undefined' && typeof req.body.newPassword != 'undefined'){
+                var db = require(root+'/connection/userManager');
+                var userID = req.session.userID;
+                db.checkIdAndPassword(userID,req.body.currentPassword,function(result){
+                    if (result==true){
+                        db.changePassword(userID,req.body.newPassword,function(){
+                            res.send(true);
+                        });
+                    } else {
+                        res.send(false);
+                    }
+                });
+            } else {
+                res.send(false);
+            }
         });
 
     /* Email management */
@@ -405,17 +441,21 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/changeEmailAddress',function(req,res){
-            var db = require(root+'/connection/userManager');
-            db.attemptAddUnverifiedEmailAddress(req.session.userID,req.body.password,req.body.newEmailAddress,expiryTime,function(data){
-                if (data==''){
-                    res.send(false);
-                } else {
-                    var nodemailer = require(root+'/nodemailer/nodemailer');
-                    var fullUrl = req.protocol + '://' + req.get('host');
-                    nodemailer.verifyEmailAddressChangeEmail(req.body.newEmailAddress,req.session.userID,fullUrl,data);
-                    res.send(true);
-                }
-            });
+            if (typeof req.body.password != 'undefined' && typeof req.body.newEmailAddress != 'undefined'){
+                var db = require(root+'/connection/userManager');
+                db.attemptAddUnverifiedEmailAddress(req.session.userID,req.body.password,req.body.newEmailAddress,expiryTime,function(data){
+                    if (data==''){
+                        res.send(false);
+                    } else {
+                        var nodemailer = require(root+'/nodemailer/nodemailer');
+                        var fullUrl = req.protocol + '://' + req.get('host');
+                        nodemailer.verifyEmailAddressChangeEmail(req.body.newEmailAddress,req.session.userID,fullUrl,data);
+                        res.send(true);
+                    }
+                });
+            } else {
+                res.send(true);
+            }
         });
 
         /**
@@ -428,18 +468,22 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.get('/changeEmailAddressVerify',function(req,res){
-            var pageTitle = "Threadstr: Verify Email Change";
-            common.setHtmlHeader(pageTitle,false,false);
-            common.setPageHeader(pageTitle);
-            if (typeof req.query.userID != 'string' || typeof req.query.verifyCode != 'string' || isNaN(req.query.userID)){
-                common.setMainDiv(common.messagesObj['unableToVerify']);
-                res.send(common.commonHTML());
-            } else {
-                var verifyEmailChangePage = require(root+'/pages/verifyEmailChangePage');
-                verifyEmailChangePage.confirmAndGetPage(parseInt(req.query.userID),req.query.verifyCode,function(outputHtml){
-                    common.setMainDiv(outputHtml);
+            if (typeof req.query.userID != 'undefined' && typeof req.query.verifyCode != 'undefined'){
+                var pageTitle = "Threadstr: Verify Email Change";
+                common.setHtmlHeader(pageTitle,false,false);
+                common.setPageHeader(pageTitle);
+                if (typeof req.query.userID != 'string' || typeof req.query.verifyCode != 'string' || isNaN(req.query.userID)){
+                    common.setMainDiv(common.messagesObj['unableToVerify']);
                     res.send(common.commonHTML());
-                });
+                } else {
+                    var verifyEmailChangePage = require(root+'/pages/verifyEmailChangePage');
+                    verifyEmailChangePage.confirmAndGetPage(parseInt(req.query.userID),req.query.verifyCode,function(outputHtml){
+                        common.setMainDiv(outputHtml);
+                        res.send(common.commonHTML());
+                    });
+                }
+            } else {
+                res.send(false);
             }
         });
 
@@ -473,19 +517,23 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.get('/deleteEmailVerify',function(req,res){
-            var pageTitle = "Threadstr: Delete Account Confirmation";
-            var scripts = [{isAsync:false,src:'/deleteAccountPage.js'}];
-            common.setHtmlHeader(pageTitle,false,scripts);
-            common.setPageHeader(pageTitle);
-            if (typeof req.query.userID != 'string' || typeof req.query.verifyCode != 'string' || isNaN(req.query.userID)){
-                common.setMainDiv(common.messagesObj['unableToVerify']);
-                res.send(common.commonHTML());
-            } else {
-                var deleteAccountPage = require(root+'/pages/deleteAccountPage');
-                deleteAccountPage.confirmAndGetPage(parseInt(req.query.userID),req.query.verifyCode,function(outputHtml){
-                    common.setMainDiv(outputHtml);
+            if (typeof req.query.userID != 'undefined' && typeof req.query.verifyCode != 'undefined'){
+                var pageTitle = "Threadstr: Delete Account Confirmation";
+                var scripts = [{isAsync:false,src:'/deleteAccountPage.js'}];
+                common.setHtmlHeader(pageTitle,false,scripts);
+                common.setPageHeader(pageTitle);
+                if (typeof req.query.userID != 'string' || typeof req.query.verifyCode != 'string' || isNaN(req.query.userID)){
+                    common.setMainDiv(common.messagesObj['unableToVerify']);
                     res.send(common.commonHTML());
-                });
+                } else {
+                    var deleteAccountPage = require(root+'/pages/deleteAccountPage');
+                    deleteAccountPage.confirmAndGetPage(parseInt(req.query.userID),req.query.verifyCode,function(outputHtml){
+                        common.setMainDiv(outputHtml);
+                        res.send(common.commonHTML());
+                    });
+                }
+            } else {
+                res.send(false);
             }
         });
 
@@ -504,7 +552,7 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/deleteAccountAction',function(req,res){
-            if (typeof req.body.userID == 'string' && typeof req.body.verifyCode == 'string' && typeof req.body.password == 'string'){
+            if (typeof req.body.userID != 'undefined' && typeof req.body.verifyCode != 'undefined' && typeof req.body.password != 'undefined'){
                 var userID = parseInt(req.body.userID);
                 var verifyCode = req.body.verifyCode;
                 var password = req.body.password;
@@ -545,7 +593,7 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/changeName',function(req,res){
-            if (typeof req.body.newDefaultDisplayName == 'string'){
+            if (typeof req.body.newDefaultDisplayName != 'undefined'){
                 var db = require(root+'/connection/userManager');
                 db.changeDefaultName(req.session.userID,req.body.newDefaultDisplayName,function(result){
                     res.send(result);
@@ -565,7 +613,7 @@ getPW.getDatabasePassword(function(password){
          */
 
         app.post('/changeTimezone',function(req,res){
-            if (typeof req.body.newTimezone == 'string'){
+            if (typeof req.body.newTimezone != 'undefined'){
                 var db = require(root+'/connection/userManager');
                 db.changeTimezone(req.session.userID,req.body.newTimezone,function(){
                     res.send(true);
