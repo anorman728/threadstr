@@ -10,11 +10,11 @@ $(document).ready(function(){
             updatePasswordMessages();
         });
 
-        $("#resetPasswordSubmitLabel").on('click',function(){
+        $("#changePasswordSubmitLabel").on('click',function(){
             var currentPass = $('#currentPasswordValue').val();
             var pass01 = $('#newPasswordValue').val();
             var pass02 = $('#confirmPasswordValue').val();
-            var updateField = "resetPasswordSubmit";
+            var updateField = "changePasswordSubmit";
             resetPassword(pass01,pass02,currentPass,updateField);
         });
 
