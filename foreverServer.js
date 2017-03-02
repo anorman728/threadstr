@@ -9,6 +9,10 @@ var child = new (forever.Monitor)(serverName,{
     args: []
 });
 
+child.on('restart', function() {
+    console.error('Forever restarting script for ' + child.times + ' time.');
+});
+
 child.on('exit',function(){
     console.log(`${serverName} has exited after ${maxRestarts} restarts.`);
 });
