@@ -629,10 +629,17 @@ getPW.getDatabasePassword(function(password){
             }
         });
 
+    /* Query the database every ten minutes to keep the connection from closing. */
+
+        setInterval(function () {
+            con.query('SELECT 1');
+        }, 600000);
+
     /* Start server. */
 
         app.listen(8080,function(){
             console.log("Listening...");
         });
+
 
 });

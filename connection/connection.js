@@ -1,16 +1,16 @@
 /*
- * Connect to database.
+   Connect to database.
  */
 
 var mysql   = require('mysql');
-connection  = mysql.createConnection({
+var connection  = mysql.createConnection({
     host    : 'localhost'       ,
     user    : 'root'            ,
     password: global.dbPassword ,
     database: "threadstr"       ,
 });
 
-/** Query the database every ten minutes to keep the connection from closing. */
+/* Query the database every ten minutes to keep the connection from closing. */
 setInterval(function () {
     connection.query('SELECT 1');
 }, 600000);
