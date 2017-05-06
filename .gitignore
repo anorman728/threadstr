@@ -1,6 +1,6 @@
 # Custom #
 ##########
-./config.json
+config.json
 about.md
 .vagrant/
 threadrsession.vim
